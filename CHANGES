@@ -17,3 +17,6 @@ Version 1.00 -- I have finally got around to making it work correctly (as I
 	any bugs being reported.  Thus I am bumping up the version to 1.00 
 	to signify a stable, non-development release, though for most things 
 	you wouln't notice any difference from version 0.11
+Version 1.01 -- Fixed a minor bug in calculations, but it should have no
+	if you're using this on dates in the unix epoch time range.
+	Thanks to Rick Osborne for spotting this.

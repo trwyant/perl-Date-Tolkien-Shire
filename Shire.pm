@@ -33,7 +33,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = 1.00;
+$VERSION = 1.01;
 
 =head1 METHOD REFERENCE
 
@@ -139,7 +139,7 @@ sub set_date {
 	    }
 	} elsif ($year == 164) { #calendars together after Overlithe
 	    ++$yday;
-	} elsif ((($year > 64) && ($year < 00)) || (($year > 164) && ($year < 200))) { #shire behind 1 day
+	} elsif ((($year > 64) && ($year < 100)) || (($year > 164) && ($year < 200))) { #shire behind 1 day
 	    if ($yday == 1) {
 		--$self->{year};
 		$leap = 1 if ($self->{year} % 4 == 0) and ($self->{year} % 100 != 0);
