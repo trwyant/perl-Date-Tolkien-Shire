@@ -33,7 +33,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = 0.02;
+$VERSION = 0.10;
 
 =head1 METHOD REFERENCE
 
@@ -48,7 +48,7 @@ date before you try to use it, you should be ok.
 
 $shiredate = Date::Tolkien::Shire->new;
 $shiredate = Date::Tolkien::Shire->new(time);
-$shiredate = Date::Tolkine::Shire->new($another_shiredate);
+$shiredate = Date::Tolkien::Shire->new($another_shiredate);
 
 The constructor new can take zero or one parameter.  Either a new object can be
 created without setting a specific date (the zero parameter version), or an
@@ -87,8 +87,11 @@ sub error {
 This method takes either the seconds from the start of the epoch (like what 
 time returns) or another shire date object, and sets the date of the 
 object in question equal to that date.  If the object previously contained
-a date, it will be overwritten.  Locatime, rather than gmt, is used in 
+a date, it will be overwritten.  Locatime, rather than utc, is used in 
 converting from epoch date.
+
+Please see the note below on calculating the year if your curious how
+I arrived by that.
 
 =cut
 
@@ -111,36 +114,29 @@ sub set_date {
 
     elsif(int $date) {
 	($year, $yday) = (localtime($date))[5,7];
-	$self->{holiday} = 0; #assume this unless we find otherwise
-	#we don't use these, but save them so we can convert back later
-
-        #first figure out if it's a leap year and if it is, deal with it
-	#we structure the years so that leap years occur at the same time
-	#in both calendars -- see also note in the pod docs
-	#for the year, I've picked one to make things nice by having leap
-	#years match up in both calenders.  Thus the fourth age starts in
-	#our 978 B.C.
 	$year += 1900;
+	$self->{holiday} = 0; #assume this unless we find otherwise
+
 	$leap = 0;
 	$leap = 1 if ($year % 4 == 0) and ($year % 100 != 0);
 	$leap = 1 if $year % 400 == 0;
-	if ($leap and $yday > 356) { ++$year; }
-	elsif ($yday > 355 and !$leap) { ++$year; }
-	$self->{year} = $year + 2400;
+	$self->{year} = $year + 5464;
+	if ($leap and $yday > 356) { ++$self->{year}; }
+	elsif ($yday > 355 and !$leap) { ++$self->{year}; }
 
 	#Now start looking at holidays, starting with leap year only Overlithe
-	if ($leap) {   
+	if ($leap) {
 	    $self->{holiday} = 4 if ($yday == 174); #Overlithe
 	    --$yday if $yday > 174;
-	} #end if
+	}
 	#leap year can now be ignored for the rest of this
 	#now check for any of the other holidays
 	unless ($self->{holiday}) {
-	    $self->{holiday} = 1 if $yday == 356; #Yule 2-first day of new year
-	    $self->{holiday} = 2 if $yday == 172; #Lithe 1
-	    $self->{holiday} = 3 if $yday == 173; #Midyear's day
-	    $self->{holiday} = 5 if $yday == 174; #Lithe 2
-	    $self->{holiday} = 6 if $yday == 355; #Yule 1
+	    if ($yday == 356) {$self->{holiday} = 1;} #Yule 2-first day of new year
+	    elsif ($yday == 172) {$self->{holiday} = 2;} #Lithe 1
+	    elsif ($yday == 173) {$self->{holiday} = 3;} #Midyear's day
+	    elsif ($yday == 174) {$self->{holiday} = 5;} #Lithe 2
+	    elsif ($yday == 355) {$self->{holiday} = 6;} #Yule 1
 	} #end unless
 
 	#now compute the day of the week.  
@@ -198,16 +194,16 @@ sub time_in_seconds {
 	return 0;
     } #end if
 
+    $year = $self->{year} - 5464;
     $leap = 0;
-    $leap = 1 if (($self->{year} % 4 == 0) and ($self->{year} % 100 != 0));
-    $leap = 1 if ($self->{year} % 400 == 0);
+    $leap = 1 if (($year % 4 == 0) and ($year % 100 != 0));
+    $leap = 1 if ($year % 400 == 0);
     $prevleap = 0;
-    $prevleap = 1 if ((($self->{year} - 1) % 4 == 0)
-		      and (($self->{year} - 1) % 100 != 0));
-    $prevleap = 1 if (($self->{year} - 1) % 400 == 0);
+    $prevleap = 1 if ((($year - 1) % 4 == 0)
+		      and (($year - 1) % 100 != 0));
+    $prevleap = 1 if (($year - 1) % 400 == 0);
 
     #compute the year-day in our calendar from the shire one, and set the year
-    $year = $self->{year} - 2400;
     if ($self->{holiday}) {
 	if ($leap) {
 	    $day = (0, 357, 173, 174, 175, 176, 357)[$self->{holiday}]; 
@@ -371,12 +367,8 @@ sub holiday {
 
 $shire_year = $shiredate->year;
 
-Returns the year of the date in question.  Note that I made up a year
-to keep things nice for me internally by making leap years always match up.
-Thus, 978 B.C. our time corresponds to the start of the fourth age.  
-If anyone can give me a better approximate, let me know and I will look 
-into changing this.  Trying to figure out when the fourth age actually
-started in our calendar is a task quite beyond me.
+Returns the year of the shire date in question.  See the note on year
+calculaton below if you want to see how I figured this.
 
 =cut
 
@@ -622,17 +614,17 @@ sub on_date {
 
     if ($self->{holiday}) {
 	if ($self->{weekday}) {
-	    $returntext = $self->weekday . " " . $self->holiday . "\n";
+	    $returntext = $self->weekday . " " . $self->holiday . " " . $self->year . "\n";
 	} #end if ($self->{holiday}
 	else {
-	    $returntext = $self->holiday . "\n";
+	    $returntext = $self->holiday . " " . $self->year ."\n";
 	} #end else
 	if (defined($events{0}->{$self->{holiday}})) {
 	    $returntext .= "\n" . $events{0}->{$self->{holiday}};
 	} #end if (defined($events{0}->{$self->{holiday}}))
     } #end if ($self->{holiday})
     else {
-	$returntext = $self->weekday . " " . $self->month . " " . $self->day . "\n";
+	$returntext = $self->weekday . " " . $self->month . " " . $self->day . " " . $self->year . "\n";
 	if (defined($events{$self->{month}}->{$self->{monthday}})) {
 	    $returntext .= "\n" . $events{$self->{month}}->{$self->{monthday}};
 	} #end if (defined($events{$self->{month}}->{$self->{monthday}}))
@@ -641,17 +633,54 @@ sub on_date {
     return $returntext;
 } #end sub on_date
 
+=head1 NOTE: YEAR CALCULATION
+
+http://www.glyhweb.com/arda/f/fourthage.html references a letter sent by
+Tolkien in 1958 in which he estimates approxiimately 6000 years have passed
+since the War of the Ring and the end of the Third Age.  (Thanks to Danny
+O'Brien from sending me this link).  I took this approximate as an exact
+and calculated back 6000 years from 1958 and set this as the start of the 
+4th age (1422).  Thus the fourth age begins in our B.C 4042.
+
+There is one issue that I have not finished yet with year calculation and it
+may change in the future (and opinions on it are welcome, as always).
+According to Appendix D of the Lord of the Rings, leap years in hobbit
+calendar are every 4 years unless its the turn of the century, in which
+case it's not a leap year.  Our calendar uses every 4 years unless it's 
+100 years unless its 400 years.  So, if no changes have been made to 
+the hobbit's calendar since the end of the third age, their calendar would
+be about 15 days further behind ours now then when the War of the Ring took
+place.  Implementing this seemed to me to go against Tolkien's general habit
+of converting dates in the novel to our equivalents to give us a better
+sense of time.  My thoughts, at least right now, is that it is truer to the
+spirit of things for March 25 today to be about the same as March 25 was back
+then.  So instead, I have modified Tolkien's description of the hobbit 
+calendar so that leap years occur once every 4 years unless it's 100
+years unless it's 400 years, so as it matches our calendar in that
+regard.  These 100 and 400 year intervals occur at different times in
+the two calendars, however.
+
+This final fact leads to the one known issue still in this module.
+Currently, the logic used here only works for years between 1937 and
+2035 (shire years 7401 to 7499).  This is due to the day offset at
+different times (in 400 year cycles) between the leap years of the different
+calendars.  The module still works for other dates and will provide valid
+comparisons, but the day it gives will be slightly off from what is actually
+the shire date unless you are between 1937 and 2035 (or 1537 and 1635, etc).
+I am planning on fixing this, but that must take a back seat for the moment 
+to my college classes and more practical projects.
+
 =head1 BIBLIOGRAPHY
 
 Tolkien, J. R. R. <i>Return of the King<i>.  New York: Houghton Mifflin Press,
 1955.
+http://www.glyphweb.com/arda/f/fourthage.html
 
 =head1 BUGS
 
-The treatment of years could probably by seen as a bug.  After all, I just 
-made it up to make things convenient. I'm afraid, however, that I have no 
-clue what they should be, so until I discover some great insite or someone 
-who does know is kind enought to instruct me, this will remain as is.
+At present, does shire date reckoning is slightly off for years not between
+1937 and 2035 (shire reckoning 7401 to 7499).  See year calculation for more
+information.
 
 =cut
 

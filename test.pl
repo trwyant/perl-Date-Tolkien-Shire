@@ -6,7 +6,7 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..5\n"; }
+BEGIN { $| = 1; print "1..4\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Date::Tolkien::Shire;
 $loaded = 1;
@@ -23,7 +23,7 @@ use Time::Local;
 #This chunk tests the constructor, part of set_date, and time_in_seconds
 $ok = true;
 @lengths = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-for ($year = 1999; $year <= 2001; ++$year) {
+foreach $year (1999..2001) {
     if ($year == 2000) { 
 	$lengths[1] = 29;
 	$date2 = Date::Tolkien::Shire->new($date); #we'll use this next chunk

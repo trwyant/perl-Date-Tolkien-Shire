@@ -1,0 +1,5 @@
+Version 0.01 -- First stable release
+Version 0.02 -- Changed my email in the pod docs
+Version 0.10 -- Year calculation has been redone to better match Tolkien's.
+	This should only break compatibility if you were storing shire dates
+	to disk somewhere.

@@ -19,7 +19,7 @@ AUTHOR
     Tom Braun <tbraun@pobox.com>
 
 DATE
-    January 2001
+    February 2001
 
 METHOD REFERENCE
     Note: I have tried to make these as friendly as possible when an error
@@ -33,7 +33,7 @@ METHOD REFERENCE
 
     $shiredate = Date::Tolkien::Shire->new; $shiredate =
     Date::Tolkien::Shire->new(time); $shiredate =
-    Date::Tolkine::Shire->new($another_shiredate);
+    Date::Tolkien::Shire->new($another_shiredate);
 
     The constructor new can take zero or one parameter. Either a new object
     can be created without setting a specific date (the zero parameter
@@ -55,8 +55,11 @@ METHOD REFERENCE
     This method takes either the seconds from the start of the epoch (like
     what time returns) or another shire date object, and sets the date of
     the object in question equal to that date. If the object previously
-    contained a date, it will be overwritten. Locatime, rather than gmt, is
+    contained a date, it will be overwritten. Locatime, rather than utc, is
     used in converting from epoch date.
+
+    Please see the note below on calculating the year if your curious how I
+    arrived by that.
 
   time_in_seconds
 
@@ -111,12 +114,8 @@ METHOD REFERENCE
 
     $shire_year = $shiredate->year;
 
-    Returns the year of the date in question. Note that I made up a year to
-    keep things nice for me internally by making leap years always match up.
-    Thus, 978 B.C. our time corresponds to the start of the fourth age. If
-    anyone can give me a better approximate, let me know and I will look
-    into changing this. Trying to figure out when the fourth age actually
-    started in our calendar is a task quite beyond me.
+    Returns the year of the shire date in question. See the note on year
+    calculaton below if you want to see how I figured this.
 
   Operators
 
@@ -162,14 +161,49 @@ METHOD REFERENCE
     If you don't like how this is formatted, complain at me and if I like
     you I'll consider changing it :-)
 
+NOTE: YEAR CALCULATION
+    http://www.glyhweb.com/arda/f/fourthage.html references a letter sent by
+    Tolkien in 1958 in which he estimates approxiimately 6000 years have
+    passed since the War of the Ring and the end of the Third Age. (Thanks
+    to Danny O'Brien from sending me this link). I took this approximate as
+    an exact and calculated back 6000 years from 1958 and set this as the
+    start of the 4th age (1422). Thus the fourth age begins in our B.C 4042.
+
+    There is one issue that I have not finished yet with year calculation
+    and it may change in the future (and opinions on it are welcome, as
+    always). According to Appendix D of the Lord of the Rings, leap years in
+    hobbit calendar are every 4 years unless its the turn of the century, in
+    which case it's not a leap year. Our calendar uses every 4 years unless
+    it's 100 years unless its 400 years. So, if no changes have been made to
+    the hobbit's calendar since the end of the third age, their calendar
+    would be about 15 days further behind ours now then when the War of the
+    Ring took place. Implementing this seemed to me to go against Tolkien's
+    general habit of converting dates in the novel to our equivalents to
+    give us a better sense of time. My thoughts, at least right now, is that
+    it is truer to the spirit of things for March 25 today to be about the
+    same as March 25 was back then. So instead, I have modified Tolkien's
+    description of the hobbit calendar so that leap years occur once every 4
+    years unless it's 100 years unless it's 400 years, so as it matches our
+    calendar in that regard. These 100 and 400 year intervals occur at
+    different times in the two calendars, however.
+
+    This final fact leads to the one known issue still in this module.
+    Currently, the logic used here only works for years between 1937 and
+    2035 (shire years 7401 to 7499). This is due to the day offset at
+    different times (in 400 year cycles) between the leap years of the
+    different calendars. The module still works for other dates and will
+    provide valid comparisons, but the day it gives will be slightly off
+    from what is actually the shire date unless you are between 1937 and
+    2035 (or 1537 and 1635, etc). I am planning on fixing this, but that
+    must take a back seat for the moment to my college classes and more
+    practical projects.
+
 BIBLIOGRAPHY
     Tolkien, J. R. R. <i>Return of the King<i>. New York: Houghton Mifflin
-    Press, 1955.
+    Press, 1955. http://www.glyphweb.com/arda/f/fourthage.html
 
 BUGS
-    The treatment of years could probably by seen as a bug. After all, I
-    just made it up to make things convenient. I'm afraid, however, that I
-    have no clue what they should be, so until I discover some great insite
-    or someone who does know is kind enought to instruct me, this will
-    remain as is.
+    At present, does shire date reckoning is slightly off for years not
+    between 1937 and 2035 (shire reckoning 7401 to 7499). See year
+    calculation for more information.
 
