@@ -33,7 +33,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = 1.11;
+$VERSION = 1.12;
 
 =head1 METHOD REFERENCE
 

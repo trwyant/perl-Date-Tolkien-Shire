@@ -28,4 +28,8 @@ Version 1.10 -- Fixed 2 bugs in reporting, both from Rene Uittenbogaard.
 Version 1.11 -- A couple minor fixes here, one thanks to Robert Sim.  
 	A couple of events in the month of Solmath were being reported on 
 	incorrect dates.
-
+Version 1.12 -- The tireless folks of the cpan testers discovered that the
+	test code doesn't work on windows.  I forgot to allow for the 
+	differences in epoch time between the two.   This again points to
+	the need to use something other than epoch time (hopefully the new
+	DateTime.pm stuff), but for now I've just adjusted the test code.
