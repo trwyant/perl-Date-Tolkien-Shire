@@ -33,7 +33,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = 1.01;
+$VERSION = 1.10;
 
 =head1 METHOD REFERENCE
 
@@ -170,11 +170,11 @@ sub set_date {
 	#leap year can now be ignored for the rest of this
 	#now check for any of the other holidays
 	unless ($self->{holiday}) {
-	    if ($yday == 356) {$self->{holiday} = 1;} #Yule 2-first day of new year
-	    elsif ($yday == 172) {$self->{holiday} = 2;} #Lithe 1
+	    if ($yday == 356) {$self->{holiday} = 1;} #2 Yule-first day of new year
+	    elsif ($yday == 172) {$self->{holiday} = 2;} #1 Lithe
 	    elsif ($yday == 173) {$self->{holiday} = 3;} #Midyear's day
-	    elsif ($yday == 174) {$self->{holiday} = 5;} #Lithe 2
-	    elsif ($yday == 355) {$self->{holiday} = 6;} #Yule 1
+	    elsif ($yday == 174) {$self->{holiday} = 5;} #2 Lithe
+	    elsif ($yday == 355) {$self->{holiday} = 6;} #1 Yule
 	} #end unless
 
 	#now compute the day of the week.  
@@ -184,7 +184,7 @@ sub set_date {
 	    $self->{weekday} = 0;
 	} #end if
 	else {
-	    $self->{weekday} = ($yday % 7) + 1;
+	    $self->{weekday} = (($yday + 2) % 7) + 1;
 	} #end else
 
 	#Now figure out the month and day of the month
@@ -194,7 +194,7 @@ sub set_date {
 	    $self->{monthday} = 0;
 	} #end if
 	else {
-	    --$yday; #ignore Yule 2
+	    --$yday; #ignore 2 Yule
 	    $yday -= 2 if $yday > 172; #ignore the Lithes (correct plural???)
 	    $yday += 9; #account for different start of year
 	    $yday -= 362 if ($yday > 361);		
@@ -403,16 +403,16 @@ sub day {
     $holiday = $shiredate->holiday;
 
 If the day in question is a holiday, returns a string which holiday it is:
-"Yule 1", "Yule 2" (first day of the new year), "Lithe 1", "Midyear's day",
-"Overlithe", or "Lithe 2".  If the day is not a holiday, the null string
+"1 Yule", "2 Yule" (first day of the new year), "1 Lithe", "Midyear's day",
+"Overlithe", or "2 Lithe".  If the day is not a holiday, the null string
 is returned
 
 =cut
 
 sub holiday {
     my $self = shift;
-    my @holidays = ('', 'Yule 2', '1 Lithe', "Midyear's day", 'Overlithe',
-		    'Lithe 2', 'Yule 1');
+    my @holidays = ('', '2 Yule', '1 Lithe', "Midyear's day", 'Overlithe',
+		    '2 Lithe', '1 Yule');
     $ERROR = '';
     if (defined $self->{holiday}) {
 	return $holidays[$self->{holiday}];
