@@ -33,7 +33,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = 1.10;
+$VERSION = 1.11;
 
 =head1 METHOD REFERENCE
 
@@ -583,12 +583,12 @@ sub on_date {
 		   16 => "Company of the Ring says farewell to Lorien --\n" . 
 		       "Gollum observes departure, 1419.\n",
 		   17 => "Gwaihir the eagle bears Gandalf to Lorien, 1419.\n",
-		   23 => "The Company of the Ring pass the Argonath and camp at Parth Galen, 1419.\n" .
+		   25 => "The Company of the Ring pass the Argonath and camp at Parth Galen, 1419.\n" .
 		       "First battle of the Fords of Isen -- Theodred son of Theoden slain, 1419.\n",
-		   25 => "Breaking of the Fellowship, 1419.\n" .
+		   26 => "Breaking of the Fellowship, 1419.\n" .
 		       "Death of Boromir; his horn is heard in Minas Tirith, 1419.\n" .
 		       "Meriadoc and Peregrin captured by Orcs -- Aragorn pursues, 1419.\n" .
-		       "Eomer hears of the descent of the Orc-band from Emyn Muil, 1418.\n" .
+		       "Eomer hears of the descent of the Orc-band from Emyn Muil, 1419.\n" .
 		       "Frodo and Samwise enter the eastern Emyn Muil, 1419.\n",
 		   27 => "Aragorn reaches the west-cliff at sunrise, 1419.\n" .
 		       "Eomer sets out Eastfold against Theoden's orders to pursue the Orcs, 1419.\n",
