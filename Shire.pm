@@ -33,7 +33,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = 0.11;
+$VERSION = 1.00;
 
 =head1 METHOD REFERENCE
 
@@ -87,7 +87,7 @@ sub error {
 This method takes either the seconds from the start of the epoch (like what 
 time returns) or another shire date object, and sets the date of the 
 object in question equal to that date.  If the object previously contained
-a date, it will be overwritten.  Locatime, rather than utc, is used in 
+a date, it will be overwritten.  Localtime, rather than utc, is used in 
 converting from epoch date.
 
 Please see the note below on calculating the year if your curious how
@@ -97,7 +97,7 @@ I arrived by that.
 
 sub set_date {
     my ($self, $date) = @_;
-    my ($leap, $sec, $min, $hour, $year, $yday);
+    my ($leap, $ourleap, $sec, $min, $hour, $year, $yday);
     $ERROR = '';
 
     $ERROR .= "You must pass in a date to set me equal to" 
@@ -114,13 +114,51 @@ sub set_date {
 
     elsif(int $date) {
 	($year, $yday) = (localtime($date))[5,7];
-	$year += 1900;
+	$self->{year} = $year + 7364; #1900 + 5464
 	$self->{holiday} = 0; #assume this unless we find otherwise
 
+	$ourleap = 0;
+	$ourleap = 1 if ($year % 4 == 0) and ($year % 100 != 0);
+	$ourleap = 1 if $year % 400 == 0;
+
+	#Now for year adjustments since "except every 100 except every
+	#400 year rule applies to different years in the two calendars"
 	$leap = 0;
-	$leap = 1 if ($year % 4 == 0) and ($year % 100 != 0);
-	$leap = 1 if $year % 400 == 0;
-	$self->{year} = $year + 5464;
+	$year = $self->{year} % 400;  #don't need old value of $year anymore
+	if ($year == 300) {  #Shire calendar goes ahead one day in our Feb.
+	    if ((!$ourleap && $yday == 365) || ($ourleap && $yday == 366)) {
+		$yday = 1;
+		++$self->{year};
+	    }
+	} elsif (($year > 300) && ($year < 364)) { #shire ahead 1 day
+	    if ((!$ourleap && $yday == 365) || ($ourleap && $yday == 366)) {
+		$yday = 1;
+		++$self->{year};
+	    } else {
+		++$yday
+	    }
+	} elsif ($year == 164) { #calendars together after Overlithe
+	    ++$yday;
+	} elsif ((($year > 64) && ($year < 00)) || (($year > 164) && ($year < 200))) { #shire behind 1 day
+	    if ($yday == 1) {
+		--$self->{year};
+		$leap = 1 if ($self->{year} % 4 == 0) and ($self->{year} % 100 != 0);
+		$leap = 1 if $self->{year} % 400 == 0;
+		if ($leap) { $yday = 366; }
+		else { $yday = 365; }
+	    } else {
+		--$yday;
+	    }
+	} elsif (($year == 100) || ($year == 200)) { #equal after Feb 29
+	    if ($yday == 1) {
+		--$self->{year};
+		$yday = 365;
+	    } else {
+		--$yday;
+	    }
+	}
+	$leap = 1 if ($self->{year} % 4 == 0) and ($self->{year} % 100 != 0);
+	$leap = 1 if $self->{year} % 400 == 0;
 	if ($leap and $yday > 356) { ++$self->{year}; }
 	elsif ($yday > 355 and !$leap) { ++$self->{year}; }
 
@@ -183,7 +221,7 @@ caveats and error handling with that module apply to this method as well.
 
 sub time_in_seconds {
     my $self = shift;
-    my (@monthlen, $leap, $prevleap, $year, $month, $day);
+    my (@monthlen, $leap, $prevleap, $ourleap, $year, $month, $day, $modyear);
     $ERROR = '';
     @monthlen = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
@@ -195,13 +233,14 @@ sub time_in_seconds {
     } #end if
 
     $year = $self->{year} - 5464;
+    #both $leap and $prevleap refer to shire calendar
     $leap = 0;
-    $leap = 1 if (($year % 4 == 0) and ($year % 100 != 0));
-    $leap = 1 if ($year % 400 == 0);
+    $leap = 1 if (($self->{year} % 4 == 0) and ($self->{year} % 100 != 0));
+    $leap = 1 if ($self->{year} % 400 == 0);
     $prevleap = 0;
-    $prevleap = 1 if ((($year - 1) % 4 == 0)
-		      and (($year - 1) % 100 != 0));
-    $prevleap = 1 if (($year - 1) % 400 == 0);
+    $prevleap = 1 if ((($self->{year} - 1) % 4 == 0)
+		      and (($self->{year} - 1) % 100 != 0));
+    $prevleap = 1 if (($self->{year} - 1) % 400 == 0);
 
     #compute the year-day in our calendar from the shire one, and set the year
     if ($self->{holiday}) {
@@ -221,24 +260,46 @@ sub time_in_seconds {
 	$day += 3 if $day > 180; #Account for the Lithe and Midyear day
 	++$day if $leap and $day > 182; #Account for Overlithe
 	$day -= 8;  #Account for year starting on a different day
-	if ($day < 1) {
-	    --$year;
-	    if ($prevleap) { $day += 366; }
-	    else { $day += 365; }
-	} #end if ($day < 1)
     } #end else
 
-    #take leap years into account
-    $monthlen[1] = 29 if (($year % 4 == 0) and ($year %100 != 0)); 
+    #Now for adjustments for various years being off by a day
+    $modyear = $self->{year} % 400;
+    if (($modyear > 300) && ($modyear < 364)) {
+	--$day unless ($modyear == 301) && ($self->{holiday} == 1);
+    } elsif ((($modyear > 64) && ($modyear <= 100)) || (($modyear > 164) && ($modyear <= 200))) {
+	++$day;
+	$ourleap = 0;
+	$ourleap = 1 if (($year % 4 == 0) and ($year % 100 != 0));
+	$ourleap = 1 if ($year % 400 == 0);
+	if ($day == 367) {
+	    ++$year;
+	    $day = 1;
+	} elsif ($day == 366 and not $ourleap) {
+	    ++$year;
+	    $day = 1;
+	}
+    } elsif (($modyear == 101) || ($modyear == 201)) {
+	++$day if ($self->{holiday} == 1);
+    }
+
+    if ($day < 1) {
+	--$year;
+	if ($year % 4 != 0) { $day += 365; }
+	elsif (($year % 100 == 0) && ($year % 400 != 0)) { $day += 365; }
+	else { $day += 366; }
+    } #end if ($day < 1)
+
+    #take our leap years into account
+    $monthlen[1] = 29 if (($year % 4 == 0) and ($year %100 != 0));
     $monthlen[1] = 29 if ($year % 400 == 0);
-    
+
     #now convert the year-day to the month and month-day
     $month = 0;
     while ($day > $monthlen[$month]) {
 	$day -= $monthlen[$month];
 	++$month;
     } #end while ($day > $monthlen[$month])
-    
+
     return timelocal(0, 0, 0, $day, $month, $year);
 } #end sub time_in_seconds 
 
@@ -670,8 +731,6 @@ O'Brien from sending me this link).  I took this approximate as an exact
 and calculated back 6000 years from 1958 and set this as the start of the 
 4th age (1422).  Thus the fourth age begins in our B.C 4042.
 
-There is one issue that I have not finished yet with year calculation and it
-may change in the future (and opinions on it are welcome, as always).
 According to Appendix D of the Lord of the Rings, leap years in hobbit
 calendar are every 4 years unless its the turn of the century, in which
 case it's not a leap year.  Our calendar uses every 4 years unless it's 
@@ -686,29 +745,23 @@ then.  So instead, I have modified Tolkien's description of the hobbit
 calendar so that leap years occur once every 4 years unless it's 100
 years unless it's 400 years, so as it matches our calendar in that
 regard.  These 100 and 400 year intervals occur at different times in
-the two calendars, however.
-
-This final fact leads to the one known issue still in this module.
-Currently, the logic used here only works for years between 1937 and
-2035 (shire years 7401 to 7499).  This is due to the day offset at
-different times (in 400 year cycles) between the leap years of the different
-calendars.  The module still works for other dates and will provide valid
-comparisons, but the day it gives will be slightly off from what is actually
-the shire date unless you are between 1937 and 2035 (or 1537 and 1635, etc).
-I am planning on fixing this, but that must take a back seat for the moment 
-to my college classes and more practical projects.
+the two calendars, however.  Thus the last day of our year is sometimes
+7 Afteryule, sometimes 8, and sometimes 9.
 
 =head1 BIBLIOGRAPHY
 
 Tolkien, J. R. R. <i>Return of the King<i>.  New York: Houghton Mifflin Press,
 1955.
+
 http://www.glyphweb.com/arda/f/fourthage.html
 
 =head1 BUGS
 
-At present, does shire date reckoning is slightly off for years not between
-1937 and 2035 (shire reckoning 7401 to 7499).  See year calculation for more
-information.
+Epoch time.  Since epoch time was used as the base for this module, and the
+only way to currently set a date is from epoch time, it borks on values that
+epoch time doesn't support (currently values before 1902 or after 2037).  The
+module should automatically expand in available dates directly with epoch time
+support on your system.
 
 =cut
 

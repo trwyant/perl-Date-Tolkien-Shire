@@ -9,3 +9,11 @@ Version 0.11 -- Added as_string and used it to overload the "" operator.
 	Also, the code Michael sent me got me thinking about the order dates
 	were displayed in, and after some thought I decided to change it to
 	day then month.  This is a really minor change, but it there.
+Version 1.00 -- I have finally got around to making it work correctly (as I
+	define correct anyway) for any year, instead of just those near the 
+	year 2000.  While almost.  It's still limited by Epoch time to years 
+	between 1902 and 2037 (on my system anyway), but now the problem is
+	outside my code.  I have also had it in CPAN for a few months without
+	any bugs being reported.  Thus I am bumping up the version to 1.00 
+	to signify a stable, non-development release, though for most things 
+	you wouln't notice any difference from version 0.11

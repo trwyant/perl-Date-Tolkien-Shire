@@ -23,8 +23,8 @@ use Time::Local;
 #This chunk tests the constructor, part of set_date, and time_in_seconds
 $ok = true;
 @lengths = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-foreach $year (1999..2001) {
-    if ($year == 2000) { 
+foreach $year (1935..1937, 1999..2000, 2035..2037 ) {
+    if ((($year % 4 == 0) && ($year % 100 != 0)) || ($year % 400 == 0)) { 
 	$lengths[1] = 29;
 	$date2 = Date::Tolkien::Shire->new($date); #we'll use this next chunk
     }
@@ -39,7 +39,7 @@ foreach $year (1999..2001) {
 	}
     }
 }
-$ok = 0 if $date->day != 8;
+$ok = 0 if $date->day != 9;
 if ($ok) { print "ok 2\n"; }
 else { print "not ok 2\n"; }
 
@@ -50,8 +50,7 @@ $ok = 0 if Date::Tolkien::Shire->error;
 $date2->set_date($date);
 $ok = 0 if Date::Tolkien::Shire->error;
 $ok = 0 if $date != $date2;
-$ok = 0 if Date::Tolkien::Shire->error;
-if ($ok) { print "ok 3\n"; }
+$ok = 0 if Date::Tolkien::Shire->error;if ($ok) { print "ok 3\n"; }
 else { print "not ok 3\n"; }
 
 #Finally Check the accessor methods and the on_date function
@@ -70,5 +69,3 @@ $date->on_date;
 $ok = 0 if Date::Tolkien::Shire->error;
 if ($ok) { print "ok 4\n"; }
 else { print "not ok 4\n"; }
-
-
