@@ -18,11 +18,11 @@ am curious to see how this gets used (if it gets used that is).
 
 =head1 AUTHOR
 
-Tom Braun <tombraun@aircontroltechniques.com>
+Tom Braun <tbraun@pobox.com>
 
 =head1 DATE
 
-January 2001
+February 2001
 
 =cut
 
@@ -33,7 +33,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = 0.01;
+$VERSION = 0.02;
 
 =head1 METHOD REFERENCE
 
@@ -654,3 +654,5 @@ clue what they should be, so until I discover some great insite or someone
 who does know is kind enought to instruct me, this will remain as is.
 
 =cut
+
+1;
