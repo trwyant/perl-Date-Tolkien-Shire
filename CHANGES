@@ -3,3 +3,9 @@ Version 0.02 -- Changed my email in the pod docs
 Version 0.10 -- Year calculation has been redone to better match Tolkien's.
 	This should only break compatibility if you were storing shire dates
 	to disk somewhere.
+	Some minor changes to the POD to make it format prettier
+Version 0.11 -- Added as_string and used it to overload the "" operator.
+	Thanks to Michael Schwern for this idea.
+	Also, the code Michael sent me got me thinking about the order dates
+	were displayed in, and after some thought I decided to change it to
+	day then month.  This is a really minor change, but it there.

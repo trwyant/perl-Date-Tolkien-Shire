@@ -33,7 +33,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = 0.10;
+$VERSION = 0.11;
 
 =head1 METHOD REFERENCE
 
@@ -46,9 +46,9 @@ date before you try to use it, you should be ok.
 
 =head2 new
 
-$shiredate = Date::Tolkien::Shire->new;
-$shiredate = Date::Tolkien::Shire->new(time);
-$shiredate = Date::Tolkien::Shire->new($another_shiredate);
+    $shiredate = Date::Tolkien::Shire->new;
+    $shiredate = Date::Tolkien::Shire->new(time);
+    $shiredate = Date::Tolkien::Shire->new($another_shiredate);
 
 The constructor new can take zero or one parameter.  Either a new object can be
 created without setting a specific date (the zero parameter version), or an
@@ -173,7 +173,7 @@ sub set_date {
 
 =head2 time_in_seconds
 
-$epoch_time = $shire_date->time_in_seconds
+    $epoch_time = $shire_date->time_in_seconds
 
 Returns the epoch time (with 0 for hours, minutes, and seconds) of
 a given shire date.   This relies on the library Time::Local, so the
@@ -244,7 +244,7 @@ sub time_in_seconds {
 
 =head2 weekday
 
-$day_of_week = $shiredate->weekday;
+    $day_of_week = $shiredate->weekday;
 
 This function returns the day of the week using the more modern names 
 in use during the War of the Ring and given in the Lord of the Rings 
@@ -269,7 +269,7 @@ sub weekday {
 
 =head2 trad_weekday (for traditional weekday)
 
-$day_of_week = $shiredate->trad_weekday
+    $day_of_week = $shiredate->trad_weekday
 
 This function returns the day of the week using the archaic forms, the
 oldest forms found in the Yellowskin of Tuckborough (also given in Appendix
@@ -294,7 +294,7 @@ sub trad_weekday {
 
 =head2 month
 
-$month = $shiredate->month;
+    $month = $shiredate->month;
 
 Returns the month of the date in question, or the null string if the day is
 a holiday, since holidays are not part of any month.
@@ -318,7 +318,7 @@ sub month {
 
 =head2 day
 
-$day_of_month = $self->{monthday};
+    $day_of_month = $self->{monthday};
 
 returns the day of the month of the day in question, or 0 in the case of 
 a holiday, since they are not part of any month
@@ -339,7 +339,7 @@ sub day {
 
 =head2 holiday
 
-$holiday = $shiredate->holiday;
+    $holiday = $shiredate->holiday;
 
 If the day in question is a holiday, returns a string which holiday it is:
 "Yule 1", "Yule 2" (first day of the new year), "Lithe 1", "Midyear's day",
@@ -365,7 +365,7 @@ sub holiday {
 
 =head2 year
 
-$shire_year = $shiredate->year;
+    $shire_year = $shiredate->year;
 
 Returns the year of the shire date in question.  See the note on year
 calculaton below if you want to see how I figured this.
@@ -410,10 +410,17 @@ cmp return -1 if the left operand is less than the right one, 0 if the
 two operands are equal, and 1 if the left operand is greater than the 
 right one.
 
+Additionally, you can view a shire date as a string:
+
+    # prints something like 'Monday 28 Rethe 7465'
+    print $shiredate;
+
 =cut
 
 use overload('<=>' => \&spaceship,
-	     'cmp' => \&spaceship);
+	     'cmp' => \&spaceship,
+             '""'  => \&as_string,
+            );
 #All the other operators come automatically once this one is defined
 
 sub spaceship {
@@ -426,9 +433,38 @@ sub spaceship {
     return $time1 <=> $time2;
 } #end sub spaceship
 
+
+=head2 as_string
+
+$shire_date_as_string = $shire_date->string;
+
+Returns the given shire date as a string, similar in theory to
+C<scalar localtime>
+
+=cut
+
+sub as_string {
+    my $self = shift;
+    my $returntext;
+
+    if ($self->{holiday}) {
+	if ($self->{weekday}) {
+	    $returntext = $self->weekday . " " . $self->holiday . " " . $self->year;
+	} #end if ($self->{holiday}
+	else {
+	    $returntext = $self->holiday . " " . $self->year;
+	} #end else
+    } #end if ($self->{holiday})
+    else {
+	$returntext = $self->weekday . " " . $self->day . " " . $self->month  . " " . $self->year;
+    } #end else
+
+    return $returntext;
+}
+
 =head2 on_date
 
-$historic_events = $shire_date->on_date
+    $historic_events = $shire_date->on_date
 
 or you may want to try something like
 my $shiredate = Date::Tolkien::Shire->new(time);
@@ -612,22 +648,14 @@ sub on_date {
     $events{12} = { 25 => "The Company of the Ring leaves Rivendell at dusk.\n"
 		    };
 
-    if ($self->{holiday}) {
-	if ($self->{weekday}) {
-	    $returntext = $self->weekday . " " . $self->holiday . " " . $self->year . "\n";
-	} #end if ($self->{holiday}
-	else {
-	    $returntext = $self->holiday . " " . $self->year ."\n";
-	} #end else
-	if (defined($events{0}->{$self->{holiday}})) {
-	    $returntext .= "\n" . $events{0}->{$self->{holiday}};
-	} #end if (defined($events{0}->{$self->{holiday}}))
-    } #end if ($self->{holiday})
+    if ($self->{holiday} and defined($events{0}->{$self->{holiday}})) {
+	$returntext .= "$self\n\n" . $events{0}->{$self->{holiday}};
+    } #end if ($self->{holiday} and defined($events{0}->{$self->{holiday}}))
+    elsif (defined($events{$self->{month}}->{$self->{monthday}})) {
+	$returntext .= "$self\n\n" . $events{$self->{month}}->{$self->{monthday}};
+    } #end elsif (defined($events{$self->{month}}->{$self->{monthday}}))
     else {
-	$returntext = $self->weekday . " " . $self->month . " " . $self->day . " " . $self->year . "\n";
-	if (defined($events{$self->{month}}->{$self->{monthday}})) {
-	    $returntext .= "\n" . $events{$self->{month}}->{$self->{monthday}};
-	} #end if (defined($events{$self->{month}}->{$self->{monthday}}))
+	$returntext = "$self\n";
     } #end else
 
     return $returntext;
