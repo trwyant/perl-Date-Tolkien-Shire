@@ -33,3 +33,5 @@ Version 1.12 -- The tireless folks of the cpan testers discovered that the
 	differences in epoch time between the two.   This again points to
 	the need to use something other than epoch time (hopefully the new
 	DateTime.pm stuff), but for now I've just adjusted the test code.
+Version 1.13 -- Fixed a the spelling of "tree" in the events for 6 Astron.
+        Thanks to WYANT for this.
