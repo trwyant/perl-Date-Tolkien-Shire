@@ -1,4 +1,12 @@
-1.13		
+1.19_01		2017-01-13	T. R. Wyant
+    Make Changes file CPAN::Changes::Spec-compliant
+
+    Update required modules.
+
+    Add Wyant as co-author. Minimal doc changes.
+
+    Correct typos in on_date() text.
+
 1.13		2006-03-29	Tom Braun
     Fixed the spelling of "tree" in the events for 6 Astron.  Thanks to
     WYANT for this.
