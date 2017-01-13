@@ -1,6 +1,6 @@
 =head1 NAME
 
-Date::Tolkien::Shire.pm
+Date::Tolkien::Shire - Convert dates into the Shire Calendar.
 
 =head1 DESCRIPTION
 
@@ -20,9 +20,25 @@ am curious to see how this gets used (if it gets used that is).
 
 Tom Braun <tbraun@pobox.com>
 
-=head1 DATE
+Thomas R. Wyant, III F<wyant at cpan dot org>
 
-February 2001
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2001-2003, 2006 Tom Braun. All rights reserved.
+
+Copyright (C) 2017 Thomas R. Wyant, III
+
+The calendar implemented on this module was created by J.R.R. Tolkien,
+and the copyright is still held by his estate.  The license and
+copyright given herein applies only to this code and not to the
+calendar itself.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+This program is distributed in the hope that it will be useful, but
+without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
 
 =cut
 
@@ -766,3 +782,5 @@ support on your system.
 =cut
 
 1;
+
+# ex: set textwidth=72 :
