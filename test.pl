@@ -21,7 +21,7 @@ print "ok 1\n";
 use Time::Local;
 
 #This chunk tests the constructor, part of set_date, and time_in_seconds
-$ok = true;
+$ok = 1;
 @lengths = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 foreach $year (1999..2002, 2035..2037 ) {
     if ((($year % 4 == 0) && ($year % 100 != 0)) || ($year % 400 == 0)) { 
