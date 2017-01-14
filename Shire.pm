@@ -49,7 +49,7 @@ use Time::Local;
 
 use vars qw($VERSION $ERROR);
 
-$VERSION = '1.19_01';
+$VERSION = '1.19_02';
 
 =head1 METHOD REFERENCE
 
