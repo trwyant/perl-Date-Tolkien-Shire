@@ -34,7 +34,8 @@ copyright given herein applies only to this code and not to the
 calendar itself.
 
 This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+under the same terms as Perl itself. For more details, see the full text
+of the licenses in the directory LICENSES.
 
 This program is distributed in the hope that it will be useful, but
 without any warranty; without even the implied warranty of

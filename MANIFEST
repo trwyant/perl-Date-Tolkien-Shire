@@ -4,4 +4,6 @@ test.pl
 MANIFEST
 README
 Changes
+LICENSES/Artistic
+LICENSES/Copying
 META.yml                                 Module meta-data (added by MakeMaker)
