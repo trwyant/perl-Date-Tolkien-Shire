@@ -723,7 +723,7 @@ sub on_date {
     $events{11} = { 3  => "Battle of Bywater and passing of Saruman, 1419.\n" .
 			"End of the War of the Ring, 1419.\n"
 		  };
-    $events{12} = { 25 => "The Company of the Ring leaves Rivendell at dusk.\n"
+    $events{12} = { 25 => "The Company of the Ring leaves Rivendell at dusk, 1418.\n"
 		    };
 
     if ($self->{holiday} and defined($events{0}->{$self->{holiday}})) {
