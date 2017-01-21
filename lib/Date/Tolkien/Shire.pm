@@ -50,9 +50,8 @@ use warnings;
 
 use Time::Local;
 
-use vars qw($VERSION $ERROR);
-
-$VERSION = '1.20';
+our $ERROR;
+our $VERSION = '1.20';
 
 =head1 METHOD REFERENCE
 
