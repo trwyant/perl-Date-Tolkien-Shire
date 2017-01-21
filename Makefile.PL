@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker;
 
 my %args = (
     NAME		=> 'Date::Tolkien::Shire',
-    VERSION_FROM	=> 'Shire.pm',
+    VERSION_FROM	=> 'lib/Date/Tolkien/Shire.pm',
     PREREQ_PM => {
 	'Time::Local'	=> 0,
 	'overload'	=> 0,
