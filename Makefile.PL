@@ -64,7 +64,7 @@ $mmv >= 6.5702
     or $args{AUTHOR} = join ', ', @{ $args{AUTHOR} };
 
 my $build_requires = {
-    'Test::More'	=> 0.88,	# Because of done_testing().
+    'Test::More'	=> 0.47,	# The best we can do with 5.6.2
 };
 
 $mmv >= 6.5501
