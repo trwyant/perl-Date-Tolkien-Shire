@@ -496,13 +496,13 @@ Additionally, you can view a shire date as a string:
 
 =cut
 
-use overload('<=>' => \&spaceship,
-	     'cmp' => \&spaceship,
+use overload('<=>' => \&_space_ship,
+	     'cmp' => \&_space_ship,
              '""'  => \&as_string,
             );
 #All the other operators come automatically once this one is defined
 
-sub spaceship {
+sub _space_ship {
     my ($date1, $date2) = @_;
     $ERROR = '';
     my $time1 = $date1->time_in_seconds;
@@ -510,7 +510,7 @@ sub spaceship {
     my $time2 = $date2->time_in_seconds;
     $ERROR .= " on right operand" if $ERROR;
     return $time1 <=> $time2;
-} #end sub spaceship
+} #end sub _space_ship
 
 
 =head2 as_string
