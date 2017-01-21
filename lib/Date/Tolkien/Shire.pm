@@ -59,7 +59,7 @@ Note:  I have tried to make these as friendly as possible when an error
 occurs.  As a consequence, none of them die, croak, etc.  All of these
 return 0 on error, but as 0 can be a valid output in a couple cases
 (the day of the month for a holiday, for example), the error method should
-always be checked to see if an error has occured.  As long as you set a
+always be checked to see if an error has occurred.  As long as you set a
 date before you try to use it, you should be ok.
 
 =head2 new
@@ -447,7 +447,7 @@ sub holiday {
     $shire_year = $shiredate->year;
 
 Returns the year of the shire date in question.  See the note on year
-calculaton below if you want to see how I figured this.
+calculation below if you want to see how I figured this.
 
 =cut
 
@@ -551,7 +551,7 @@ print "Today is " . $shiredate->on_date . "\n";
 
 This method returns a string containing important events that happened 
 on this day and month in history, as well as the day itself.  It does not
-give much more usefullness as far as using dates go, but it should
+give much more usefulness as far as using dates go, but it should
 be fun to run during a startup script or something.  At present the events are
 limited to the crucial years at the end of the third age when the final war 
 of the ring took place and Sauron was permanently defeated.  More dates 
@@ -561,7 +561,7 @@ these are only available in English.
 
 Note here that the string is formatted.  This is to keep things simple
 when using it as in the second example above.  Note that in this second
-example you are actually ending with a double space, as the first endline
+example you are actually ending with a double space, as the first newline
 is part of the return value.  
 
 If you don't like how this is formatted, complain at me and if I like you
@@ -743,7 +743,7 @@ sub on_date {
 =head1 NOTE: YEAR CALCULATION
 
 L<http://www.glyhweb.com/arda/f/fourthage.html> references a letter sent by
-Tolkien in 1958 in which he estimates approxiimately 6000 years have passed
+Tolkien in 1958 in which he estimates approximately 6000 years have passed
 since the War of the Ring and the end of the Third Age.  (Thanks to Danny
 O'Brien from sending me this link).  I took this approximate as an exact
 and calculated back 6000 years from 1958 and set this as the start of the 
