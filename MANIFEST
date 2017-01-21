@@ -1,6 +1,5 @@
 Shire.pm
 Makefile.PL
-test.pl
 MANIFEST
 README
 Changes
@@ -8,3 +7,5 @@ LICENSES/Artistic
 LICENSES/Copying
 META.yml
 META.json
+t/basic.t
+t/shire.t

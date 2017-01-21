@@ -63,7 +63,7 @@ $mmv >= 6.5702
     or $args{AUTHOR} = join ', ', @{ $args{AUTHOR} };
 
 my $build_requires = {
-#   'Test::More'	=> 0.88,	# Because of done_testing().
+    'Test::More'	=> 0.88,	# Because of done_testing().
 };
 
 $mmv >= 6.5501
@@ -85,7 +85,7 @@ sub MY::postamble {
     return <<"EOD";
 
 # AUTHORTEST_FILES = t/*.t xt/author/*.t
-AUTHORTEST_FILES = test.pl
+AUTHORTEST_FILES = t/*.t
 
 authortest :: pure_all
 	AUTHOR_TESTING=1 $authortest
