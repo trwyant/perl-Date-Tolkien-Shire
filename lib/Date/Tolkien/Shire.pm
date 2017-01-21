@@ -46,6 +46,8 @@ merchantability or fitness for a particular purpose.
 package Date::Tolkien::Shire;
 
 use strict;
+use warnings;
+
 use Time::Local;
 
 use vars qw($VERSION $ERROR);
