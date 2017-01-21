@@ -77,11 +77,11 @@ setting dates, see the 'set_date' function.
 =cut
 
 sub new {
-    my $class = shift;
+    my ( $class, $date ) = @_;
     my $self = {};
     $ERROR = '';
     bless($self, $class);
-    $self->set_date($_[0]) if defined($_[0]);
+    $self->set_date($date) if defined($date);
     return $self;
 } #end sub new
 
@@ -115,7 +115,7 @@ I arrived by that.
 
 sub set_date {
     my ($self, $date) = @_;
-    my ($leap, $ourleap, $sec, $min, $hour, $year, $yday);
+    my ($leap, $ourleap, $year, $yday);
     $ERROR = '';
 
     $ERROR .= "You must pass in a date to set me equal to" 
@@ -178,7 +178,7 @@ sub set_date {
 	$leap = 1 if ($self->{year} % 4 == 0) and ($self->{year} % 100 != 0);
 	$leap = 1 if $self->{year} % 400 == 0;
 	if ($leap and $yday > 356) { ++$self->{year}; }
-	elsif ($yday > 355 and !$leap) { ++$self->{year}; }
+	elsif ($yday > 355 and not $leap) { ++$self->{year}; }
 
 	#Now start looking at holidays, starting with leap year only Overlithe
 	if ($leap) {
