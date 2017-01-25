@@ -102,13 +102,13 @@ sub error {
 
 =head2 set_date
 
-This method takes either the seconds from the start of the epoch (like what 
-time returns) or another shire date object, and sets the date of the 
-object in question equal to that date.  If the object previously contained
-a date, it will be overwritten.  Localtime, rather than utc, is used in 
-converting from epoch date.
+This method takes either the seconds from the start of the epoch (like
+what C<time()> returns) or another shire date object, and sets the date
+of the object in question equal to that date.  If the object previously
+contained a date, it will be overwritten.  Local time, rather than UTC,
+is used in converting from epoch date.
 
-Please see the note below on calculating the year if your curious how
+Please see the note below on calculating the year if you're curious how
 I arrived by that.
 
 =cut
@@ -332,19 +332,21 @@ day and the Overlithe), then the null string is returned.
 
 =cut
 
-sub weekday {
-    my $self = shift;
-    my @days = ('', 'Sterday', 'Sunday', 'Monday', 'Trewsday', 'Hevensday',
-		'Mersday', 'Highday');
-    $ERROR = '';
-    if (defined $self->{weekday}) {
-	return $days[$self->{weekday}];
-    } #end if
-    else {
-	$ERROR = "You must set a date first";
-	return 0;
-    } #end else 
-} #end sub weekday
+{
+    my @days = ( '', 'Sterday', 'Sunday', 'Monday', 'Trewsday',
+	'Hevensday', 'Mersday', 'Highday' );
+
+    sub weekday {
+	my $self = shift;
+	$ERROR = '';
+	if (defined $self->{weekday}) {
+	    return $days[$self->{weekday}];
+	} else {
+	    $ERROR = "You must set a date first";
+	    return 0;
+	}
+    }
+}
 
 =head2 trad_weekday (for traditional weekday)
 
@@ -357,19 +359,21 @@ Overlithe), then the null string is returned.
 
 =cut 
 
-sub trad_weekday {
-    my $self = shift;
-    my @days = ('', 'Sterrendei', 'Sunnendei', 'Monendei', 'Trewesdei',
-		'Hevenesdei', 'Meresdei', 'Highdei');
-    $ERROR = '';
-    if (defined $self->{weekday}) {
-	return $days[$self->{weekday}];
-    } #end if
-    else {
-	$ERROR = "You must set a date first";
-	return 0;
-    } #end else 
-} #end sub trad_weekday
+{
+    my @days = ( '', 'Sterrendei', 'Sunnendei', 'Monendei', 'Trewesdei',
+	'Hevenesdei', 'Meresdei', 'Highdei' );
+
+    sub trad_weekday {
+	my $self = shift;
+	$ERROR = '';
+	if (defined $self->{weekday}) {
+	    return $days[$self->{weekday}];
+	} else {
+	    $ERROR = "You must set a date first";
+	    return 0;
+	}
+    }
+}
 
 =head2 month
 
@@ -380,20 +384,23 @@ a holiday, since holidays are not part of any month.
 
 =cut
 
-sub month {
-    my $self = shift;
-    my @months = ('', 'Afteryule', 'Solmath', 'Rethe', 'Astron', 'Thrimidge',
-		  'Forelithe', 'Afterlithe', 'Wedmath', 'Halimath', 
-		  'Winterfilth', 'Blotmath', 'Foreyule');
-    $ERROR = '';
-    if (defined $self->{month}) {
-	return $months[$self->{month}];
-    } #end if
-    else {
-	$ERROR = "You must set a date first";
-	return 0;
-    } #end else 
-} #end sub month
+{
+
+    my @months = ( '', 'Afteryule', 'Solmath', 'Rethe', 'Astron',
+	'Thrimidge', 'Forelithe', 'Afterlithe', 'Wedmath', 'Halimath',
+	'Winterfilth', 'Blotmath', 'Foreyule' );
+
+    sub month {
+	my $self = shift;
+	$ERROR = '';
+	if (defined $self->{month}) {
+	    return $months[$self->{month}];
+	} else {
+	    $ERROR = "You must set a date first";
+	    return 0;
+	}
+    }
+}
 
 =head2 day
 
@@ -427,19 +434,21 @@ is returned
 
 =cut
 
-sub holiday {
-    my $self = shift;
-    my @holidays = ('', '2 Yule', '1 Lithe', "Midyear's day", 'Overlithe',
-		    '2 Lithe', '1 Yule');
-    $ERROR = '';
-    if (defined $self->{holiday}) {
-	return $holidays[$self->{holiday}];
-    } #end if
-    else {
-	$ERROR = "You must set a date first";
-	return 0;
-    } #end else 
-} #end sub holiday
+{
+    my @holidays = ( '', '2 Yule', '1 Lithe', "Midyear's day",
+	'Overlithe', '2 Lithe', '1 Yule' );
+
+    sub holiday {
+	my $self = shift;
+	$ERROR = '';
+	if (defined $self->{holiday}) {
+	    return $holidays[$self->{holiday}];
+	} else {
+	    $ERROR = "You must set a date first";
+	    return 0;
+	}
+    }
+}
 
 
 =head2 year
@@ -570,15 +579,8 @@ I'll consider changing it :-)
 
 =cut
 
-sub on_date {
-    my $self = shift;
-    my ($returntext, %events);
-    $ERROR = '';
-    if (not (defined ($self->{holiday}) and defined ($self->{weekday}) and
-	     defined ($self->{month}) and defined ($self->{monthday}))) {
-	$ERROR = "You must set a date first";
-	return 0;
-    } #end if
+{
+    my %events;
 
     # %events has the following structure.  It is a hash of hashes.
     # The top level hash is keyed by the numbers 0 - 12.  1-12 refer to 
@@ -727,19 +729,27 @@ sub on_date {
 		  };
     $events{12} = { 25 => "The Company of the Ring leaves Rivendell at dusk, 1418.\n"
 		    };
+    sub on_date {
+	my $self = shift;
+	my $returntext;
+	$ERROR = '';
+	if (not (defined ($self->{holiday}) and defined ($self->{weekday}) and
+		 defined ($self->{month}) and defined ($self->{monthday}))) {
+	    $ERROR = "You must set a date first";
+	    return 0;
+	}
 
-    if ($self->{holiday} and defined($events{0}->{$self->{holiday}})) {
-	$returntext .= "$self\n\n" . $events{0}->{$self->{holiday}};
-    } #end if ($self->{holiday} and defined($events{0}->{$self->{holiday}}))
-    elsif (defined($events{$self->{month}}->{$self->{monthday}})) {
-	$returntext .= "$self\n\n" . $events{$self->{month}}->{$self->{monthday}};
-    } #end elsif (defined($events{$self->{month}}->{$self->{monthday}}))
-    else {
-	$returntext = "$self\n";
-    } #end else
+	if ($self->{holiday} and defined($events{0}->{$self->{holiday}})) {
+	    $returntext .= "$self\n\n" . $events{0}->{$self->{holiday}};
+	} elsif (defined($events{$self->{month}}->{$self->{monthday}})) {
+	    $returntext .= "$self\n\n" . $events{$self->{month}}->{$self->{monthday}};
+	} else {
+	    $returntext = "$self\n";
+	}
 
-    return $returntext;
-} #end sub on_date
+	return $returntext;
+    }
+}
 
 =head1 NOTE: YEAR CALCULATION
 
