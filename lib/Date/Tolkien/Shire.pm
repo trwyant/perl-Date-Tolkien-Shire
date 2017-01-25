@@ -466,6 +466,7 @@ sub year {
 =head2 Operators
 
 The following comparison operators are available:
+
     $shiredate1 <  $shiredate2
     $shiredate1 lt $shiredate2
     $shiredate1 <= $shiredate2
