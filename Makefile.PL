@@ -34,13 +34,15 @@ my %args = (
 $mmv >= 6.31
     and $args{LICENSE} = 'perl';
 
-$mmv >= 6.4501
-    and $args{META_MERGE} = {
+if ( $mmv >= 6.4501 ) {
+    $args{META_ADD} = {
+	no_index => {
+	    directory => [ qw{ inc t xt } ],
+	},
+    };
+    $args{META_MERGE} = {
 	'meta-spec'	=> {
 	    version	=> 2,
-	},
-	no_index	=> {
-	    directory	=> [ qw{ inc t xt } ],
 	},
 	resources	=> {
 	    bugtracker	=> {
@@ -55,7 +57,8 @@ $mmv >= 6.4501
 	    },
 	},
 	provides(),
-};
+    };
+}
 
 $mmv >= 6.4701
     and $args{MIN_PERL_VERSION} = 5.006002;
