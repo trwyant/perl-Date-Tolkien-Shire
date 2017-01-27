@@ -1,3 +1,21 @@
+1.20_01		2017-01-27	T. R. Wyant
+    Pull static data out of subroutines.
+
+    Rewrite tests using Test::More 0.47, which is the latest we can use
+    under Perl 5.6.2.
+
+    Add author tests.
+
+    Bring the code up to my usual level of Perl::Critic compliance.
+
+    Add 'provides' data to ExtUtils::MakeMaker output
+
+    Replace 'use vars' with 'our'.
+
+    use warnings;
+
+    Move Shire.pm to lib/Date/Tolkien/
+
 1.20		2017-01-21	T. R. Wyant
     Correct typos in on_date() text.
 

@@ -51,7 +51,7 @@ use warnings;
 use Time::Local;
 
 our $ERROR;
-our $VERSION = '1.20';
+our $VERSION = '1.20_01';
 
 =head1 METHOD REFERENCE
 
