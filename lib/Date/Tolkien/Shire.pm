@@ -1,48 +1,3 @@
-=head1 NAME
-
-Date::Tolkien::Shire - Convert dates into the Shire Calendar.
-
-=head1 DESCRIPTION
-
-This is an object-oriented module to convert dates into the Shire Calender
-as presented in the Lord of the Rings by J. R. R. Tolkien.  It includes
-converting epoch time to the Shire Calendar (you can also get epoch time back),
-comparison operators, and a method to print a formatted string containing
-that does something to the effect of on this date in history -- pulling 
-events from the Lord of the Rings.
-
-The biggest use I can see in this thing is in a startup script or possible
-to keep yourself entertained in an otherwise boring app that includes a date.
-If you have any other ideas/suggestions/uses, etc., please let me know.  I
-am curious to see how this gets used (if it gets used that is).
-
-=head1 AUTHOR
-
-Tom Braun <tbraun@pobox.com>
-
-Thomas R. Wyant, III F<wyant at cpan dot org>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (c) 2001-2003, 2006 Tom Braun. All rights reserved.
-
-Copyright (C) 2017 Thomas R. Wyant, III
-
-The calendar implemented on this module was created by J.R.R. Tolkien,
-and the copyright is still held by his estate.  The license and
-copyright given herein applies only to this code and not to the
-calendar itself.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself. For more details, see the full text
-of the licenses in the directory LICENSES.
-
-This program is distributed in the hope that it will be useful, but
-without any warranty; without even the implied warranty of
-merchantability or fitness for a particular purpose.
-
-=cut
-
 package Date::Tolkien::Shire;
 
 use strict;
@@ -53,29 +8,6 @@ use Time::Local;
 our $ERROR;
 our $VERSION = '1.20_01';
 
-=head1 METHOD REFERENCE
-
-Note:  I have tried to make these as friendly as possible when an error
-occurs.  As a consequence, none of them die, croak, etc.  All of these
-return 0 on error, but as 0 can be a valid output in a couple cases
-(the day of the month for a holiday, for example), the error method should
-always be checked to see if an error has occurred.  As long as you set a
-date before you try to use it, you should be ok.
-
-=head2 new
-
-    $shiredate = Date::Tolkien::Shire->new;
-    $shiredate = Date::Tolkien::Shire->new(time);
-    $shiredate = Date::Tolkien::Shire->new($another_shiredate);
-
-The constructor new can take zero or one parameter.  Either a new object can be
-created without setting a specific date (the zero parameter version), or an
-object can be created and the date set to either a current shire date, or 
-an epoch time such as is returned by the time function.  For specifics on
-setting dates, see the 'set_date' function.
-
-=cut
-
 sub new {
     my ( $class, $date ) = @_;
     my $self = {};
@@ -83,42 +15,18 @@ sub new {
     bless($self, $class);
     $self->set_date($date) if defined($date);
     return $self;
-} #end sub new
-
-=head2 error
-
-    $the_error = $shiredate->error;
-    $the_error = Date::Tolkien::Shire->error;
-
-This returns a null string if everything in the previous method call was
-as it should be, and a string contain a description of what happened if an
-error occurred.
-
-=cut
+}
 
 sub error {
     return $ERROR;
-} #end sub error
-
-=head2 set_date
-
-This method takes either the seconds from the start of the epoch (like
-what C<time()> returns) or another shire date object, and sets the date
-of the object in question equal to that date.  If the object previously
-contained a date, it will be overwritten.  Local time, rather than UTC,
-is used in converting from epoch date.
-
-Please see the note below on calculating the year if you're curious how
-I arrived by that.
-
-=cut
+}
 
 sub set_date {
     my ($self, $date) = @_;
     my ($leap, $ourleap, $year, $yday);
     $ERROR = '';
 
-    $ERROR .= "You must pass in a date to set me equal to" 
+    $ERROR .= "You must pass in a date to set me equal to"
 	if not defined($date);
     return $self if $ERROR;
 
@@ -195,7 +103,7 @@ sub set_date {
 	    elsif ($yday == 355) {$self->{holiday} = 6;} #1 Yule
 	} #end unless
 
-	#now compute the day of the week.  
+	#now compute the day of the week.
 	#Midyear's day (and Overlithe when applicable) not in any week
 	--$yday if $yday > 172; #we want only days that have a weeday now
 	if ($self->{holiday} == 3 or $self->{holiday} == 4) {
@@ -215,27 +123,17 @@ sub set_date {
 	    --$yday; #ignore 2 Yule
 	    $yday -= 2 if $yday > 172; #ignore the Lithes (correct plural???)
 	    $yday += 9; #account for different start of year
-	    $yday -= 362 if ($yday > 361);		
+	    $yday -= 362 if ($yday > 361);
 	    $self->{monthday} = ($yday % 30) + 1;
 	    $self->{month} = int($yday / 30) + 1;
 	} #end else
     } #end elsif (int $date)
-    
+
     else {
 	$ERROR .= "The date you gave is invalid";
-    } #end else 
+    } #end else
     return $self;
-} #end sub set_date
-
-=head2 time_in_seconds
-
-    $epoch_time = $shire_date->time_in_seconds
-
-Returns the epoch time (with 0 for hours, minutes, and seconds) of
-a given shire date.   This relies on the library Time::Local, so the
-caveats and error handling with that module apply to this method as well.
-
-=cut
+}
 
 sub time_in_seconds {
     my $self = shift;
@@ -263,7 +161,7 @@ sub time_in_seconds {
     #compute the year-day in our calendar from the shire one, and set the year
     if ($self->{holiday}) {
 	if ($leap) {
-	    $day = (0, 357, 173, 174, 175, 176, 357)[$self->{holiday}]; 
+	    $day = (0, 357, 173, 174, 175, 176, 357)[$self->{holiday}];
 	} #end if ($leap)
 	elsif ($prevleap) {
 	    $day = (0, 358, 173, 174, 0, 175, 356)[$self->{holiday}];
@@ -319,18 +217,7 @@ sub time_in_seconds {
     } #end while ($day > $monthlen[$month])
 
     return timelocal(0, 0, 0, $day, $month, $year);
-} #end sub time_in_seconds 
-
-=head2 weekday
-
-    $day_of_week = $shiredate->weekday;
-
-This function returns the day of the week using the more modern names 
-in use during the War of the Ring and given in the Lord of the Rings 
-Appendix D.  If the day in question is not part of any week (Midyear 
-day and the Overlithe), then the null string is returned.
-
-=cut
+}
 
 {
     my @days = ( '', 'Sterday', 'Sunday', 'Monday', 'Trewsday',
@@ -348,17 +235,6 @@ day and the Overlithe), then the null string is returned.
     }
 }
 
-=head2 trad_weekday (for traditional weekday)
-
-    $day_of_week = $shiredate->trad_weekday
-
-This function returns the day of the week using the archaic forms, the
-oldest forms found in the Yellowskin of Tuckborough (also given in Appendix
-D).  If the day in question is not part of any week (Midyear day and the
-Overlithe), then the null string is returned.
-
-=cut 
-
 {
     my @days = ( '', 'Sterrendei', 'Sunnendei', 'Monendei', 'Trewesdei',
 	'Hevenesdei', 'Meresdei', 'Highdei' );
@@ -374,15 +250,6 @@ Overlithe), then the null string is returned.
 	}
     }
 }
-
-=head2 month
-
-    $month = $shiredate->month;
-
-Returns the month of the date in question, or the null string if the day is
-a holiday, since holidays are not part of any month.
-
-=cut
 
 {
 
@@ -402,15 +269,6 @@ a holiday, since holidays are not part of any month.
     }
 }
 
-=head2 day
-
-    $day_of_month = $self->{monthday};
-
-returns the day of the month of the day in question, or 0 in the case of 
-a holiday, since they are not part of any month
-
-=cut
-
 sub day {
     my $self = shift;
     $ERROR = '';
@@ -420,19 +278,8 @@ sub day {
     else {
 	$ERROR = "You must set a date first";
 	return 0;
-    } #end else 
-} #end sub  day
-
-=head2 holiday
-
-    $holiday = $shiredate->holiday;
-
-If the day in question is a holiday, returns a string which holiday it is:
-"1 Yule", "2 Yule" (first day of the new year), "1 Lithe", "Midyear's day",
-"Overlithe", or "2 Lithe".  If the day is not a holiday, the null string
-is returned
-
-=cut
+    } #end else
+}
 
 {
     my @holidays = ( '', '2 Yule', '1 Lithe', "Midyear's day",
@@ -450,16 +297,6 @@ is returned
     }
 }
 
-
-=head2 year
-
-    $shire_year = $shiredate->year;
-
-Returns the year of the shire date in question.  See the note on year
-calculation below if you want to see how I figured this.
-
-=cut
-
 sub year {
     my $self = shift;
     $ERROR = '';
@@ -469,42 +306,8 @@ sub year {
     else {
 	$ERROR = "You must set a date first";
 	return 0;
-    } #end else 
-} #end sub year
-
-=head2 Operators
-
-The following comparison operators are available:
-
-    $shiredate1 <  $shiredate2
-    $shiredate1 lt $shiredate2
-    $shiredate1 <= $shiredate2
-    $shiredate1 le $shiredate2
-    $shiredate1 >  $shiredate2
-    $shiredate1 gt $shiredate2
-    $shiredate1 >= $shiredate2
-    $shiredate1 ge $shiredate2
-    $shiredate1 == $shiredate2
-    $shiredate1 eq $shiredate2
-    $shiredate1 != $shiredate2
-    $shiredate1 ne $shiredate2
-    $shiredate1 <=> $shiredate2
-    $shiredate1 cmp $shiredate2
-
-You can only compare on shire date to another (no apples to oranges here).
-In this context both the numeric and string operators perform the 
-exact same function.  Like the standard operators, all but <=> and cmp return
-1 if the condition is true and the null string if it is false.  <=> and
-cmp return -1 if the left operand is less than the right one, 0 if the 
-two operands are equal, and 1 if the left operand is greater than the 
-right one.
-
-Additionally, you can view a shire date as a string:
-
-    # prints something like 'Monday 28 Rethe 7465'
-    print $shiredate;
-
-=cut
+    } #end else
+}
 
 use overload('<=>' => \&_space_ship,
 	     'cmp' => \&_space_ship,
@@ -522,15 +325,6 @@ sub _space_ship {
     return $time1 <=> $time2;
 } #end sub _space_ship
 
-
-=head2 as_string
-
-$shire_date_as_string = $shire_date->string;
-
-Returns the given shire date as a string, similar in theory to
-C<scalar localtime>
-
-=cut
 
 sub as_string {
     my $self = shift;
@@ -551,43 +345,15 @@ sub as_string {
     return $returntext;
 }
 
-=head2 on_date
-
-    $historic_events = $shire_date->on_date
-
-or you may want to try something like
-my $shiredate = Date::Tolkien::Shire->new(time);
-print "Today is " . $shiredate->on_date . "\n";
-
-This method returns a string containing important events that happened 
-on this day and month in history, as well as the day itself.  It does not
-give much more usefulness as far as using dates go, but it should
-be fun to run during a startup script or something.  At present the events are
-limited to the crucial years at the end of the third age when the final war 
-of the ring took place and Sauron was permanently defeated.  More dates 
-will be added as I find them (if I find them maybe I should say).  All
-the ones below come from Appendix B of the Lord of the Rings.  At this point,
-these are only available in English.  
-
-Note here that the string is formatted.  This is to keep things simple
-when using it as in the second example above.  Note that in this second
-example you are actually ending with a double space, as the first newline
-is part of the return value.  
-
-If you don't like how this is formatted, complain at me and if I like you
-I'll consider changing it :-)
-
-=cut
-
 {
     my %events;
 
-    # %events has the following structure.  It is a hash of hashes.
-    # The top level hash is keyed by the numbers 0 - 12.  1-12 refer to 
-    # the months and zero is reserved to holidays.  The second level hash
-    # is keyed by the date 1-30 within the month, or 1-6 for the six holidays.
-    # The values of the level 2 hashes are the events we want to return if
-    # the day matches up
+    # %events has the following structure.  It is a hash of hashes.  The
+    # top level hash is keyed by the numbers 0 - 12.  1-12 refer to the
+    # months and zero is reserved to holidays.  The second level hash is
+    # keyed by the date 1-30 within the month, or 1-6 for the six
+    # holidays.  The values of the level 2 hashes are the events we want
+    # to return if the day matches up
     $events{0} = { 3  => "Wedding of King Elessar and Arwen, 1419.\n"
 		   };
     $events{1} = { 8  => "The Company of the Ring reaches Hollin, 1419.\n",
@@ -601,7 +367,7 @@ I'll consider changing it :-)
 		   };
     $events{2} = { 14 => "Frodo and Sam look in the Mirror of Galadriel, 1419.\n" .
 		       "Gandalf returns to life, and lies in a trance, 1419.\n",
-		   16 => "Company of the Ring says farewell to Lorien --\n" . 
+		   16 => "Company of the Ring says farewell to Lorien --\n" .
 		       "Gollum observes departure, 1419.\n",
 		   17 => "Gwaihir the eagle bears Gandalf to Lorien, 1419.\n",
 		   25 => "The Company of the Ring pass the Argonath and camp at Parth Galen, 1419.\n" .
@@ -630,11 +396,11 @@ I'll consider changing it :-)
 		       "Ents complete the destruction of Isengard.\n",
 		   4  => "Theoden and Gandalf set out from Helm's Deep for Isengard, 1419.\n" .
 		       "Frodo reaches the slag mound on the edge of the of the Morannon, 1419.\n",
-		   5  => "Theoden reaches Isengard at noon; parley with Saruman in Orthanc, 1419.\n" . 
+		   5  => "Theoden reaches Isengard at noon; parley with Saruman in Orthanc, 1419.\n" .
 		       "Gandalf sets out with Peregrin for Minas Tirith, 1419.\n",
-		   6  => "Aragorn overtaken by the Dunedain in the early hours, 1419.\n", 
+		   6  => "Aragorn overtaken by the Dunedain in the early hours, 1419.\n",
 		   7  => "Frodo taken by Faramir to Henneth Annun, 1419.\n" .
-		       "Aragorn comes to Dunharrow at nightfall, 1419.\n", 
+		       "Aragorn comes to Dunharrow at nightfall, 1419.\n",
 		   8  => "Aragorn takes the \"Paths of the Dead\", and reaches Erech at midnight, 1419.\n".
 		       "Frodo leaves Henneth Annun, 1419.\n",
 		   9  => "Gandalf reaches Minas Tirith, 1419.\n" .
@@ -643,7 +409,7 @@ I'll consider changing it :-)
 		       "The Rohirrim are mustered and ride from Harrowdale, 1419.\n" .
 		       "Faramir rescued by Gandalf at the gates of Minas Tirith, 1419.\n" .
 		       "An army from the Morannon takes Cair Andros and passes in Anorien, 1419.\n",
-		   11 => "Gollum visits Shelob, 1419.\n" . 
+		   11 => "Gollum visits Shelob, 1419.\n" .
 		       "Denethor sends Faramir to Osgiliath, 1419.\n" .
 		       "Eastern Rohan is invaded and Lorien assaulted, 1419.\n",
 		   12 => "Gollum leads Frodo into Shelob's lair, 1419.\n" .
@@ -680,7 +446,7 @@ I'll consider changing it :-)
     $events{5} = { 1  => "Crowning of King Elessar, 1419.\n" .
 		       "Samwise marries Rose, 1420.\n"
 		   };
-    $events{6} = { 20 => "Sauron attacks Osgiliath, 1418.\n" . 
+    $events{6} = { 20 => "Sauron attacks Osgiliath, 1418.\n" .
 		       "Thranduil is attacked, and Gollum escapes, 1418.\n"
 		   };
     $events{7} = { 4  => "Boromir sets out from Minas Tirith, 1418\n",
@@ -694,13 +460,13 @@ I'll consider changing it :-)
 		   20 => "Gandalf gains entrance to Edoras.  Theoden commands him to go:\n" .
 		       "\"Take any horse, only be gone ere tomorrow is old\", 1418.\n",
 		   21 => "The hobbits return to Rivendell, 1419.\n",
-		   22 => "Birthday of Bilbo and Frodo.\n" .  
-		       "The Black Riders reach Sarn Ford at evening;\n" . 
+		   22 => "Birthday of Bilbo and Frodo.\n" .
+		       "The Black Riders reach Sarn Ford at evening;\n" .
 		       "  they drive off the guard of Rangers, 1418.\n" .
-		       "Saruman comes to the Shire, 1419.\n",   
+		       "Saruman comes to the Shire, 1419.\n",
 		   23 => "Four Black Riders enter the shire before dawn.  The others pursue \n" .
 		       "the Rangers eastward and then return to watch the Greenway, 1418.\n" .
-		       "A Black Rider comes to Hobbiton at nightfall, 1418.\n" . 
+		       "A Black Rider comes to Hobbiton at nightfall, 1418.\n" .
 		       "Frodo leaves Bag End, 1418.\n" .
 		       "Gandalf having tamed Shadowfax rides from Rohan, 1418.\n",
 		   26 => "Frodo comes to Bombadil, 1418\n",
@@ -716,14 +482,14 @@ I'll consider changing it :-)
 		    6  => "The camp under Weathertop is attacked at night and Frodo is wounded, 1418.\n",
 		    11 => "Glorfindel drives the Black Riders off the Bridge of Mitheithel, 1418.\n",
 		    13 => "Frodo crosses the Bridge of Mitheithel, 1418.\n",
-		    18 => "Glorfindel finds Frodo at dusk, 1418.\n" . 
+		    18 => "Glorfindel finds Frodo at dusk, 1418.\n" .
 			"Gandalf reaches Rivendell, 1418.\n",
 		    20 => "Escape across the Ford of Bruinen, 1418.\n",
 		    24 => "Frodo recovers and wakes, 1418.\n" .
 			"Boromir arrives at Rivendell at night, 1418.\n",
 		    25 => "Council of Elrond, 1418.\n",
 		    30 => "The four Hobbits arrive at the Brandywine Bridge in the dark, 1419.\n"
-		    }; 
+		    };
     $events{11} = { 3  => "Battle of Bywater and passing of Saruman, 1419.\n" .
 			"End of the War of the Ring, 1419.\n"
 		  };
@@ -751,26 +517,221 @@ I'll consider changing it :-)
     }
 }
 
+1;
+
+__END__
+
+=head1 NAME
+
+Date::Tolkien::Shire - Convert dates into the Shire Calendar.
+
+=head1 SYNOPSIS
+
+ use Date::Tolkien::Shire;
+
+ my $dts = Date::Tolkien::Shire->new( time );
+ print $dts->on_date();
+
+=head1 DESCRIPTION
+
+This is an object-oriented module to convert dates into the Shire
+Calendar as presented in the Lord of the Rings by J. R. R. Tolkien.  It
+includes converting epoch time to the Shire Calendar (you can also get
+epoch time back), comparison operators, and a method to print a
+formatted string containing that does something to the effect of on this
+date in history -- pulling events from the Lord of the Rings.
+
+The biggest use I can see in this thing is in a startup script or
+possible to keep yourself entertained in an otherwise boring app that
+includes a date.  If you have any other ideas/suggestions/uses, etc.,
+please let me know.  I am curious to see how this gets used (if it gets
+used that is).
+
+=head1 METHODS
+
+Note:  I have tried to make these as friendly as possible when an error
+occurs.  As a consequence, none of them die, croak, etc.  All of these
+return 0 on error, but as 0 can be a valid output in a couple cases (the
+day of the month for a holiday, for example), the error method should
+always be checked to see if an error has occurred.  As long as you set a
+date before you try to use it, you should be ok.
+
+=head2 new
+
+    $shiredate = Date::Tolkien::Shire->new;
+    $shiredate = Date::Tolkien::Shire->new(time);
+    $shiredate = Date::Tolkien::Shire->new($another_shiredate);
+
+The constructor new can take zero or one parameter.  Either a new object
+can be created without setting a specific date (the zero parameter
+version), or an object can be created and the date set to either a
+current shire date, or an epoch time such as is returned by the time
+function.  For specifics on setting dates, see the 'set_date' function.
+
+=head2 error
+
+    $the_error = $shiredate->error;
+    $the_error = Date::Tolkien::Shire->error;
+
+This returns a null string if everything in the previous method call was
+as it should be, and a string contain a description of what happened if
+an error occurred.
+
+=head2 set_date
+
+This method takes either the seconds from the start of the epoch (like
+what C<time()> returns) or another shire date object, and sets the date
+of the object in question equal to that date.  If the object previously
+contained a date, it will be overwritten.  Local time, rather than UTC,
+is used in converting from epoch date.
+
+Please see the note below on calculating the year if you're curious how
+I arrived by that.
+
+=head2 time_in_seconds
+
+    $epoch_time = $shire_date->time_in_seconds
+
+Returns the epoch time (with 0 for hours, minutes, and seconds) of
+a given shire date.   This relies on the library Time::Local, so the
+caveats and error handling with that module apply to this method as well.
+
+=head2 weekday
+
+    $day_of_week = $shiredate->weekday;
+
+This method returns the day of the week using the more modern names in
+use during the War of the Ring and given in the Lord of the Rings
+Appendix D.  If the day in question is not part of any week (Midyear's
+day and the Overlithe), then the null string is returned.
+
+=head2 trad_weekday
+
+    $day_of_week = $shiredate->trad_weekday
+
+This method returns the day of the week using the archaic forms, the
+oldest forms found in the Yellowskin of Tuckborough (also given in
+Appendix D).  If the day in question is not part of any week (Midyear's
+day and the Overlithe), then the null string is returned.
+
+=head2 month
+
+    $month = $shiredate->month;
+
+This method returns the month of the date in question, or the null
+string if the day is a holiday, since holidays are not part of any
+month.
+
+=head2 day
+
+    $day_of_month = $self->day;
+
+returns the day of the month of the day in question, or 0 in the case of
+a holiday, since they are not part of any month
+
+=head2 holiday
+
+    $holiday = $shiredate->holiday;
+
+If the day in question is a holiday, returns a string which holiday it
+is: "1 Yule", "2 Yule" (first day of the new year), "1 Lithe",
+"Midyear's day", "Overlithe", or "2 Lithe".  If the day is not a
+holiday, the null string is returned.
+
+=head2 year
+
+    $shire_year = $shiredate->year;
+
+Returns the year of the shire date in question.  See the note on year
+calculation below if you want to see how I figured this.
+
+=head2 Overloaded Operators
+
+The following comparison operators are available:
+
+    $shiredate1 <  $shiredate2
+    $shiredate1 lt $shiredate2
+    $shiredate1 <= $shiredate2
+    $shiredate1 le $shiredate2
+    $shiredate1 >  $shiredate2
+    $shiredate1 gt $shiredate2
+    $shiredate1 >= $shiredate2
+    $shiredate1 ge $shiredate2
+    $shiredate1 == $shiredate2
+    $shiredate1 eq $shiredate2
+    $shiredate1 != $shiredate2
+    $shiredate1 ne $shiredate2
+    $shiredate1 <=> $shiredate2
+    $shiredate1 cmp $shiredate2
+
+You can only compare on shire date to another (no apples to oranges
+here).  In this context both the numeric and string operators perform
+the exact same function.  Like the standard operators, all but <=> and
+cmp return 1 if the condition is true and the null string if it is
+false.  <=> and cmp return -1 if the left operand is less than the right
+one, 0 if the two operands are equal, and 1 if the left operand is
+greater than the right one.
+
+Additionally, you can view a shire date as a string:
+
+    # prints something like 'Monday 28 Rethe 7465'
+    print $shiredate;
+
+=head2 as_string
+
+    $shire_date_as_string = $shire_date->as_string;
+
+Returns the given shire date as a string, similar in theory to
+C<scalar localtime>. This is the method used to implement
+the stringification overload.
+
+=head2 on_date
+
+    $historic_events = $shire_date->on_date
+
+or you may want to try something like
+
+    my $shiredate = Date::Tolkien::Shire->new( time );
+    print "Today is " . $shiredate->on_date . "\n";
+
+This method returns a string containing important events that happened
+on this day and month in history, as well as the day itself.  It does
+not give much more usefulness as far as using dates go, but it should be
+fun to run during a startup script or something.  At present the events
+are limited to the crucial years at the end of the third age when the
+final war of the ring took place and Sauron was permanently defeated.
+More dates will be added as I find them (if I find them maybe I should
+say).  All the ones below come from Appendix B of the Lord of the Rings.
+At this point, these are only available in English.
+
+Note here that the string is formatted. This is to keep things simple
+when using it as in the example above.  Note that in this example you
+are actually ending with a double newline, as the first newline is part
+of the return value.
+
+If you don't like how this is formatted, complain at me and if I like
+you I'll consider changing it :-)
+
 =head1 NOTE: YEAR CALCULATION
 
 L<http://www.glyhweb.com/arda/f/fourthage.html> references a letter sent by
 Tolkien in 1958 in which he estimates approximately 6000 years have passed
 since the War of the Ring and the end of the Third Age.  (Thanks to Danny
 O'Brien from sending me this link).  I took this approximate as an exact
-and calculated back 6000 years from 1958 and set this as the start of the 
+and calculated back 6000 years from 1958 and set this as the start of the
 4th age (1422).  Thus the fourth age begins in our B.C 4042.
 
 According to Appendix D of the Lord of the Rings, leap years in hobbit
 calendar are every 4 years unless its the turn of the century, in which
-case it's not a leap year.  Our calendar uses every 4 years unless it's 
-100 years unless its 400 years.  So, if no changes have been made to 
+case it's not a leap year.  Our calendar uses every 4 years unless it's
+100 years unless its 400 years.  So, if no changes have been made to
 the hobbit's calendar since the end of the third age, their calendar would
 be about 15 days further behind ours now then when the War of the Ring took
 place.  Implementing this seemed to me to go against Tolkien's general habit
 of converting dates in the novel to our equivalents to give us a better
 sense of time.  My thoughts, at least right now, is that it is truer to the
 spirit of things for March 25 today to be about the same as March 25 was back
-then.  So instead, I have modified Tolkien's description of the hobbit 
+then.  So instead, I have modified Tolkien's description of the hobbit
 calendar so that leap years occur once every 4 years unless it's 100
 years unless it's 400 years, so as it matches our calendar in that
 regard.  These 100 and 400 year intervals occur at different times in
@@ -792,8 +753,31 @@ epoch time doesn't support (currently values before 1902 or after 2037).  The
 module should automatically expand in available dates directly with epoch time
 support on your system.
 
-=cut
+=head1 AUTHOR
 
-1;
+Tom Braun <tbraun@pobox.com>
+
+Thomas R. Wyant, III F<wyant at cpan dot org>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2001-2003, 2006 Tom Braun. All rights reserved.
+
+Copyright (C) 2017 Thomas R. Wyant, III
+
+The calendar implemented on this module was created by J.R.R. Tolkien,
+and the copyright is still held by his estate.  The license and
+copyright given herein applies only to this code and not to the
+calendar itself.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself. For more details, see the full text
+of the licenses in the directory LICENSES.
+
+This program is distributed in the hope that it will be useful, but
+without any warranty; without even the implied warranty of
+merchantability or fitness for a particular purpose.
+
+=cut
 
 # ex: set textwidth=72 :
