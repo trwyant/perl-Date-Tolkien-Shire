@@ -538,11 +538,11 @@ This is an object-oriented module to convert dates into the Shire
 Calendar as presented in the Lord of the Rings by J. R. R. Tolkien.  It
 includes converting epoch time to the Shire Calendar (you can also get
 epoch time back), comparison operators, and a method to print a
-formatted string containing that does something to the effect of on this
-date in history -- pulling events from the Lord of the Rings.
+formatted string that does something to the effect of I<on this
+date in history> -- pulling events from the Lord of the Rings.
 
 The biggest use I can see in this thing is in a startup script or
-possible to keep yourself entertained in an otherwise boring app that
+possibly to keep yourself entertained in an otherwise boring app that
 includes a date.  If you have any other ideas/suggestions/uses, etc.,
 please let me know.  I am curious to see how this gets used (if it gets
 used that is).
@@ -562,8 +562,8 @@ date before you try to use it, you should be ok.
     $shiredate = Date::Tolkien::Shire->new(time);
     $shiredate = Date::Tolkien::Shire->new($another_shiredate);
 
-The constructor new can take zero or one parameter.  Either a new object
-can be created without setting a specific date (the zero parameter
+The constructor C<new()> can take zero or one parameter. Either a new object
+can be created without setting a specific date (the zero-parameter
 version), or an object can be created and the date set to either a
 current shire date, or an epoch time such as is returned by the time
 function.  For specifics on setting dates, see the 'set_date' function.
@@ -603,7 +603,7 @@ caveats and error handling with that module apply to this method as well.
 This method returns the day of the week using the more modern names in
 use during the War of the Ring and given in the Lord of the Rings
 Appendix D.  If the day in question is not part of any week (Midyear's
-day and the Overlithe), then the null string is returned.
+day and the Overlithe), then an empty string is returned.
 
 =head2 trad_weekday
 
@@ -612,13 +612,13 @@ day and the Overlithe), then the null string is returned.
 This method returns the day of the week using the archaic forms, the
 oldest forms found in the Yellowskin of Tuckborough (also given in
 Appendix D).  If the day in question is not part of any week (Midyear's
-day and the Overlithe), then the null string is returned.
+day and the Overlithe), then an empty string is returned.
 
 =head2 month
 
     $month = $shiredate->month;
 
-This method returns the month of the date in question, or the null
+This method returns the month of the date in question, or an empty
 string if the day is a holiday, since holidays are not part of any
 month.
 
@@ -721,19 +721,21 @@ O'Brien from sending me this link).  I took this approximate as an exact
 and calculated back 6000 years from 1958 and set this as the start of the
 4th age (1422).  Thus the fourth age begins in our B.C 4042.
 
-According to Appendix D of the Lord of the Rings, leap years in hobbit
-calendar are every 4 years unless its the turn of the century, in which
-case it's not a leap year.  Our calendar uses every 4 years unless it's
-100 years unless its 400 years.  So, if no changes have been made to
-the hobbit's calendar since the end of the third age, their calendar would
+According to Appendix D of the Lord of the Rings, leap years in the
+hobbits'
+calendar are every 4 years unless it is the turn of the century, in which
+case it is not a leap year.  Our calendar uses every 4 years unless it
+is
+100 years unless it is 400 years.  So, if no changes had been made to
+the hobbits' calendar since the end of the third age, their calendar would
 be about 15 days further behind ours now then when the War of the Ring took
 place.  Implementing this seemed to me to go against Tolkien's general habit
 of converting dates in the novel to our equivalents to give us a better
 sense of time.  My thoughts, at least right now, is that it is truer to the
 spirit of things for March 25 today to be about the same as March 25 was back
-then.  So instead, I have modified Tolkien's description of the hobbit
-calendar so that leap years occur once every 4 years unless it's 100
-years unless it's 400 years, so as it matches our calendar in that
+then.  So instead, I have modified Tolkien's description of the hobbits'
+calendar so that leap years occur once every 4 years unless it is 100
+years unless it is 400 years, so that it matches our calendar in that
 regard.  These 100 and 400 year intervals occur at different times in
 the two calendars, however.  Thus the last day of our year is sometimes
 7 Afteryule, sometimes 8, and sometimes 9.
