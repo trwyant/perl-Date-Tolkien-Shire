@@ -6,7 +6,7 @@ use warnings;
 use Time::Local;
 
 our $ERROR;
-our $VERSION = '1.20_03';
+our $VERSION = '1.21';
 
 sub new {
     my ( $class, $date ) = @_;

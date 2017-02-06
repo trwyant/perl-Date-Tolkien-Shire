@@ -1,13 +1,11 @@
-1.20_03		2017-01-30	T. R. Wyant
+1.21		2017-02-06	T. R. Wyant
     Fix broken link in POD. Thanks to Mohammad S Anwar for picking up on
     this.
 
     Minor correction to on_date() text.
 
-1.20_02		2017-01-29	T. R. Wyant
     Regularize POD, move to end of module.
 
-1.20_01		2017-01-27	T. R. Wyant
     Pull static data out of subroutines.
 
     Rewrite tests using Test::More 0.47, which is the latest we can use
