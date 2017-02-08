@@ -9,6 +9,8 @@ META.yml
 README
 t/basic.t
 t/shire.t
+tools/lib/Date/Tolkien/Shire.pm
+tools/make-regression
 xt/author/changes.t
 xt/author/critic.t
 xt/author/executable.t
