@@ -7,6 +7,7 @@ use Date::Tolkien::Shire::Data qw{
     __date_to_day_of_year
     __day_of_week
     __day_of_year_to_date
+    __format
     __holiday_name
     __is_leap_year
     __month_name
@@ -230,6 +231,22 @@ sub on_date {
     }
 
     return $self->as_string() . "\n";
+}
+
+sub strftime {
+    my ( $self, @fmt ) = @_;
+
+    my %hash = (
+	year	=> $self->{year},
+	month	=> $self->{month},
+	day	=> $self->{monthday},
+	holiday	=> $self->{holiday},
+	epoch	=> $self->epoch(),
+    );
+
+    return wantarray ?
+	( map { __format( \%hash, $_ ) } @fmt ) :
+	__format( \%hash, $fmt[0] );
 }
 
 sub _has_date {
@@ -457,6 +474,60 @@ of the return value.
 
 If you don't like how this is formatted, complain at me and if I like
 you I'll consider changing it :-)
+
+=head2 strftime
+
+This is a re-implementation imported from
+L<Date::Tolkien::Shire::Data|Date::Tolkien::Shire::Data>. It is intended
+to be reasonably compatible with the same-named L<DateTime|DateTime>
+method, but has some additions. Briefly:
+
+=over
+
+=item %EA
+
+The full traditional weekday name, or C<''> for holidays that are part
+of no week.
+
+=item %Ea
+
+The abbreviated traditional weekday name, or C<''> for holidays that are
+part of no week.
+
+=item %Ed
+
+The L<on_date()|/on_date> event text for the given date, or C<''> if
+there is none.
+
+=item %EE
+
+The full holiday name, or C<''> for non-holidays.
+
+=item %Ee
+
+The abbreviated holiday name, or C<''> for non-holidays.
+
+=item %Ex
+
+Like C<'%c'>, but without the time of day, and with full names rather
+than abbreviations.
+
+=item %{{format||format||format}}
+
+The formatter chooses the first format for normal days (i.e. part of a
+month), the second for holidays that are part of a week (i.e. 2 Yule, 1
+Lithe, 2 Lithe and 1 Yule), or the third for holidays that are not part
+of a week (i.e. Midyear's day and the Overlithe). If the second or third
+formats are omitted, the preceding format is used. Trailing C<||>
+operators can also be omitted. If you need to specify more than one
+right curly bracket or vertical bar as part of a format, separate them
+with percent signs (i.e. C<'|%|%|'>.
+
+=back
+
+See L<__format()|Date::Tolkien::Shire::Data/__format> in
+L<Date::Tolkien::Shire::Data|Date::Tolkien::Shire::Data> for full
+documentation, which takes precedence over anything said here.
 
 =head1 NOTE: YEAR CALCULATION
 

@@ -1,4 +1,5 @@
 Changes
+eg/on-date
 lib/Date/Tolkien/Shire.pm
 LICENSES/Artistic
 LICENSES/Copying
@@ -9,6 +10,7 @@ META.yml
 README
 t/basic.t
 t/shire.t
+t/strftime.t
 tools/lib/Date/Tolkien/Shire.pm
 tools/make-regression
 xt/author/changes.t
