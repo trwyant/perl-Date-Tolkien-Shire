@@ -11,10 +11,12 @@ my %args = (
     NAME		=> 'Date::Tolkien::Shire',
     VERSION_FROM	=> 'lib/Date/Tolkien/Shire.pm',
     PREREQ_PM => {
-	'Time::Local'	=> 0,
-	'overload'	=> 0,
-	'strict'	=> 0,
-	'vars'		=> 0,
+	'Date::Tolkien::Shire::Data'	=> 0,
+	'Time::Local'			=> 0,
+	'overload'			=> 0,
+	'strict'			=> 0,
+	'vars'				=> 0,
+	'warnings'			=> 0,
     },
     PL_FILES => {},	# Prevent old MakeMaker from running Build.PL
     'dist' => {
