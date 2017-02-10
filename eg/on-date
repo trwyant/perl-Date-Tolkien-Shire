@@ -17,21 +17,34 @@ my %opt = (
 );
 
 GetOptions( \%opt,
-    qw{ format=s },
+    qw{ format=s shire! },
     help => sub { pod2usage( { -verbose => 2 } ) },
 ) and @ARGV <= 3 or pod2usage( { -verbose => 0 } );
 
-my $epoch;
-if ( @ARGV ) {
+my $dts;
+
+if ( $opt{shire} ) {
+    my %arg;
+    if ( 3 == @ARGV ) {
+	@arg{ qw{ year month day } } = @ARGV;
+    } else {
+	@arg{ qw{ year holiday } } = @ARGV;
+    }
+    defined $arg{year}
+	or die "You must specify the year with -shire\n";
+    $dts = Date::Tolkien::Shire->from_shire( %arg );
+} elsif ( @ARGV ) {
     my ( $year, $month, $day ) = @ARGV;
     $month ||= 1;
     $day ||= 1;
-    $epoch = timelocal( 0, 0, 0, $day, $month - 1, $year );
+    $dts = Date::Tolkien::Shire->new(
+	timelocal( 0, 0, 0, $day, $month - 1, $year ) );
 } else {
-    $epoch = time;
+    $dts = Date::Tolkien::Shire->today();
 }
 
-my $dts = Date::Tolkien::Shire->new( $epoch );
+$dts->error()
+    and die $dts->error(), "\n";
 
 print $dts->strftime( $opt{format} ), "\n";
 
@@ -64,6 +77,15 @@ C<on_date()>.
 
 This option displays the documentation for this script. The script then
 exits.
+
+=head2 -shire
+
+If this option is asserted, the arguments are dates in the Shire
+calendar: either year, month, and day numbers, or year and holiday
+numbers.
+
+The default is C<-noshire>, which causes the arguments to be interpreted
+as Gregorian year, month and day numbers.
 
 =head2 -version
 
