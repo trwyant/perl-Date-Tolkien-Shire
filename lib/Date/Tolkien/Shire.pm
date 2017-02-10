@@ -42,6 +42,11 @@ sub today {
     return $class->new( time );
 }
 
+sub from_shire {
+    my ( $class, %arg ) = @_;
+    return $class->new()->set_shire( %arg );
+}
+
 sub set_date {
     my ( $self, $date ) = @_;
     $ERROR = '';
@@ -98,6 +103,49 @@ sub set_rata_die {
     $self->{weekday} = __day_of_week( $shire_month, $shire_day );
 
     return $self;
+}
+
+{
+    my %legal = map { $_ => 1 } qw{ year month day holiday };
+
+    sub set_shire {
+	my ( $self, %arg ) = @_;
+
+	foreach my $key ( keys %arg ) {
+	    $legal{$key}
+		or return _error_out( $self,
+		"No such argument as '$key'" );
+	    $arg{$key} =~ m/ \A [0-9]+ \z /smx
+		or return _error_out( $self,
+		"Argument '$key' must be an unsigned integer" );
+	}
+
+	defined $arg{year}
+	    or return _error_out( $self, 'Year must be specified' );
+
+	if ( $arg{month} ) {
+	    $arg{holiday}
+		and return _error_out( $self,
+		'Month and holiday must not both be specified' );
+	    if ( $arg{month} ) {
+		$arg{holiday} = 0;
+		$arg{day} ||= 1;
+	    } else {
+		$arg{holiday} = $arg{day};
+		$arg{day} = 0;
+	    }
+	} else {
+	    $arg{holiday} ||= 1;
+	    $arg{month} = $arg{day} = 0;
+	}
+
+	$ERROR = '';
+	$arg{weekday} = __day_of_week( $arg{month}, $arg{day} ||
+	    $arg{holiday} );
+	$arg{monthday} = delete $arg{day};
+	%{ $self } = %arg;
+	return $self;
+    }
 }
 
 sub time_in_seconds {
@@ -284,6 +332,12 @@ sub strftime {
 	__format( \%hash, $fmt[0] );
 }
 
+sub _error_out {
+    my ( $return, @msg ) = @_;
+    $ERROR = join ' ', @msg;
+    return $return;
+}
+
 sub _has_date {
     my ( $self ) = @_;
     if ( grep { ! defined $self->{$_} }
@@ -363,6 +417,21 @@ an error occurred.
 This convenience constructor returns an object set to midnight the
 morning of the current local day.
 
+=head2 from_shire
+
+    $shiredate = Date::Tolkien::Shire->from_shire(
+        year    => 1419,
+        month   => 3,
+        day     => 25,
+    );
+    $shiredate = Date::Tolkien::Shire->from_shire(
+        year    => 1419,
+        holiday => 3,
+    );
+
+This convenience constructor just wraps a call to C<new()> followed by a
+call to C<set_shire()>.
+
 =head2 set_date
 
 This method takes either the seconds from the start of the epoch (like
@@ -384,6 +453,28 @@ is used, but others, if provided, should be consistent with the output
 of the L<DateTime|DateTime> C<utc_rd_values()>, to save trouble in the
 (probably unlikely) event that I add time-of-day functionality to this
 package.
+
+=head2 set_shire
+
+    $shiredate->set_shire(
+        year    => 1418,
+        month	=> 3,
+        day     => 25,
+    );
+    $shiredate->set_shire(
+        year    => 1419,
+        holiday => 3,
+    );
+
+This method sets the object's date to the given date in the Shire
+calendar. The named arguments are C<year>, C<month>, C<day>, and
+C<holiday>, and all are numeric. The C<year> argument is required; all
+others are optional. You may not specify both C<month> and C<holiday>.
+If C<month> is specified, C<day> defaults to C<1>; otherwise C<holiday>
+defaults to C<1>.
+
+This method returns the invocant. Errors are indicated by setting the
+C<$ERROR> variable.
 
 =head2 time_in_seconds
 

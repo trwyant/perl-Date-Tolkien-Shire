@@ -9,7 +9,7 @@ use Date::Tolkien::Shire;
 use Test::More 0.47;	# The best we can do with 5.6.2.
 use Time::Local;
 
-plan tests => 2567;
+plan tests => 2568;
 
 my @month_length = ( 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 );
 
@@ -64,6 +64,15 @@ for my $year ( 1999 .. 2002, 2035 .. 2037 ) {
     my $date2 = Date::Tolkien::Shire->new( $date1 );
 
     cmp_ok( $date2, '==', $date1, 'Instantiate from another object' );
+
+    $date2 = Date::Tolkien::Shire->from_shire(
+	year	=> 7502,
+	month	=> 1,
+	day	=> 9,
+    );
+
+    cmp_ok( $date2, '==', $date1, 'Instantiate from Shire date' )
+	or diag( "Error: $Date::Tolkien::Shire::ERROR" );
 
 }
 
