@@ -36,6 +36,12 @@ sub error {
     return $ERROR;
 }
 
+sub today {
+    my ( $class ) = @_;
+    # TODO If I ever do time-of-day support, this will have to change.
+    return $class->new( time );
+}
+
 sub set_date {
     my ( $self, $date ) = @_;
     $ERROR = '';
@@ -320,6 +326,13 @@ function.  For specifics on setting dates, see the 'set_date' function.
 This returns a null string if everything in the previous method call was
 as it should be, and a string contain a description of what happened if
 an error occurred.
+
+=head2 today
+
+    $shiredate = Date::Tolkien::Shire->today();
+
+This convenience constructor returns an object set to midnight the
+morning of the current local day.
 
 =head2 set_date
 

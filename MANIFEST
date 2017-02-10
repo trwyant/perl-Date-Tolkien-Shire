@@ -11,6 +11,7 @@ README
 t/basic.t
 t/shire.t
 t/strftime.t
+t/time.t
 tools/lib/Date/Tolkien/Shire.pm
 tools/make-regression
 xt/author/changes.t
