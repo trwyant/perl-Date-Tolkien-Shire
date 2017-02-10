@@ -137,6 +137,8 @@ sub time_in_seconds {
     return 0;
 }
 
+# TODO if I do time of day, epoch() will return it, whereas
+# time_in_seconds will not.
 *epoch = \&time_in_seconds;	# sub epoch
 
 sub weekday {
@@ -146,6 +148,15 @@ sub weekday {
 	or return 0;
 
     return __weekday_name( $self->{weekday} );
+}
+
+sub weekday_number {
+    my ( $self ) = @_;
+
+    $self->_has_date()
+	or return 0;
+
+    return $self->{weekday};
 }
 
 sub trad_weekday {
@@ -166,6 +177,15 @@ sub month {
     return __month_name( $self->{month} );
 }
 
+sub month_number {
+    my ( $self ) = @_;
+
+    $self->_has_date()
+	or return 0;
+
+    return $self->{month};
+}
+
 sub day {
     my ( $self ) = @_;
 
@@ -182,6 +202,15 @@ sub holiday {
 	or return 0;
 
     return __holiday_name( $self->{holiday} );
+}
+
+sub holiday_number {
+    my ( $self ) = @_;
+
+    $self->_has_date()
+	or return 0;
+
+    return $self->{holiday};
 }
 
 sub year {
@@ -374,12 +403,22 @@ L<time_in_seconds()|/time_in_seconds> will remain as of midnight.
 
 =head2 weekday
 
-    $day_of_week = $shiredate->weekday;
+    $day_of_week_name = $shiredate->weekday;
 
 This method returns the day of the week using the more modern names in
 use during the War of the Ring and given in the Lord of the Rings
 Appendix D.  If the day in question is not part of any week (Midyear's
 day and the Overlithe), then an empty string is returned.
+
+=head2 weekday_number
+
+    $day_of_week_number = $shiredate->weekday_number;
+
+This method returns the number of the day of the week of the date in
+question, or C<0> if the day is not part of any week (i.e.
+C<Midyear's day> or the C<Overlithe>). Note that C<0> is also returned
+on an error (date not set), so the careful programmer who uses this
+method will check C<$ERROR> if C<0> is returned.
 
 =head2 trad_weekday
 
@@ -392,27 +431,57 @@ day and the Overlithe), then an empty string is returned.
 
 =head2 month
 
-    $month = $shiredate->month;
+    $month_name = $shiredate->month;
 
-This method returns the month of the date in question, or an empty
+This method returns the month name of the date in question, or an empty
 string if the day is a holiday, since holidays are not part of any
 month.
+
+=head2 month_number
+
+    $month_number = $shiredate->month_number;
+
+This method returns the month number of the date in question, or C<0> if
+the day is a holiday, since holidays are not part of any month. Note
+that C<0> is also returned on an error (date not set), so the careful
+programmer who uses this method will check C<$ERROR> if C<0> is
+returned.
 
 =head2 day
 
     $day_of_month = $self->day;
 
-returns the day of the month of the day in question, or 0 in the case of
-a holiday, since they are not part of any month
+This method returns the day of the month of the day in question, or C<0> in
+the case of a holiday, since they are not part of any month. Since C<0>
+is also returned on an error (date not set), the careful programmer will
+check C<$ERROR> if C<0> is returned.
 
 =head2 holiday
 
-    $holiday = $shiredate->holiday;
+    $holiday_name = $shiredate->holiday;
 
-If the day in question is a holiday, returns a string which holiday it
-is: "1 Yule", "2 Yule" (first day of the new year), "1 Lithe",
-"Midyear's day", "Overlithe", or "2 Lithe".  If the day is not a
-holiday, the null string is returned.
+If the day in question is a holiday, returns the holiday name: C<"1
+Yule">, C<"2 Yule"> (first day of the new year), C<"1 Lithe">,
+C<"Midyear's day">, C<"Overlithe">, or C<"2 Lithe">.  If the day is not
+a holiday, an empty string is returned.
+
+=head2 holiday_number
+
+    $holiday_number = $shiredate->holiday_number;
+
+This method returns the holiday number of the date in question, as
+follows:
+
+    0 - Not a holiday
+    1 - 2 Yule
+    2 - 1 Lithe
+    3 - Midyear's day
+    4 - Overlithe (leap year only)
+    5 - 2 Lithe
+    6 - 1 Yule
+
+Since C<0> is also returned on an error (date not set), the careful
+programmer will check C<$ERROR> if C<0> is returned.
 
 =head2 year
 
