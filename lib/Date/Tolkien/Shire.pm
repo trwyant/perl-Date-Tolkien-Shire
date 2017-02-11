@@ -59,10 +59,13 @@ sub set_date {
     my $ref = ref $date;
 
     if ( __PACKAGE__ eq $ref ) {
+
 	# Shallow clone
 	%{ $self } = %{ $date };
-    } elsif ( int $date ) {
 
+    } elsif ( ! $ref ) {
+
+	# TODO this will throw warnings if the date is not a number.
 	my ( $greg_year, $greg_day_of_year ) = ( localtime $date )[5,7];
 
 	my $greg_rata_die = __year_day_to_rata_die(
