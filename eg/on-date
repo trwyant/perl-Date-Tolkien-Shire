@@ -13,7 +13,7 @@ use Time::Local;
 our $VERSION = '1.21';
 
 my %opt = (
-    format	=> '%Ex%n%ED',
+    format	=> '%Ex%n%En%Ed',
 );
 
 GetOptions( \%opt,
@@ -72,7 +72,7 @@ on-date - Lord Of THe Rings events on a given Gregorian date
 
 This option specifies the format string to use in generating the output.
 
-The default is C<'%Ex%n%ED'>, which produces output like C<on_date()>.
+The default is C<'%Ex%n%En%Ed'>, which produces output like C<on_date()>.
 
 =head2 -help
 
