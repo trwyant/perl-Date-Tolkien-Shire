@@ -670,10 +670,20 @@ of no week.
 The abbreviated traditional weekday name, or C<''> for holidays that are
 part of no week.
 
+=item %ED
+
+The L<__on_date_accented()|/__on_date_accented> text for the given date.
+
+You can get a leading C<"\n"> if there was an actual event using
+C<'%En%ED'>.
+
 =item %Ed
 
-The L<on_date()|/on_date> event text for the given date, or C<''> if
-there is none.
+The L<__on_date()|/__on_date> text for the given date.
+
+You can get a leading C<"\n"> if there was an actual event using
+C<'%En%Ed'>. So to mimic L<Date::Tolkien::Shire|Date::Tolkien::Shire>
+L<on_date()|Date::Tolkien::Shire/on_date>, use C<'%Ex%n%En%Ed'>.
 
 =item %EE
 
@@ -682,6 +692,12 @@ The full holiday name, or C<''> for non-holidays.
 =item %Ee
 
 The abbreviated holiday name, or C<''> for non-holidays.
+
+=item %En
+
+Inserts nothing, but causes the next C<%Ed> or C<%ED> (and B<only> the
+next one) to have a C<"\n"> prefixed if there was an actual event on the
+date.
 
 =item %Ex
 
