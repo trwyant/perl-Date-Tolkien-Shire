@@ -292,31 +292,24 @@ sub _space_ship {
 
 
 sub as_string {
-    my ( $self ) = @_;
-
-    $self->_has_date()
-	or return 0;
-
-    return join ' ', map { $self->$_() }
-	$self->{month} ? qw{ weekday day month year } :
-	$self->{weekday} ? qw{ weekday holiday year } :
-	qw{ holiday year };
+    # I can not just assign to $_[1] because it is an alias for the
+    # argument, thus the possibility of spooky action at a distance.
+    splice @_, 1, $#_, '%Ex';
+    goto &strftime;
 }
 
 sub on_date {
-    my ( $self ) = @_;
+    # I can not just assign to $_[1] because it is an alias for the
+    # argument, thus the possibility of spooky action at a distance.
+    splice @_, 1, $#_, '%Ex%n%En%Ed';
+    goto &strftime;
+}
 
-    $self->_has_date()
-	or return 0;
-
-    if ( defined( my $event = __on_date(
-		$self->{month},
-		$self->{monthday} || $self->{holiday},
-	    ) ) ) {
-	return join "\n\n", $self->as_string(), $event;
-    }
-
-    return $self->as_string() . "\n";
+sub on_date_accented {
+    # I can not just assign to $_[1] because it is an alias for the
+    # argument, thus the possibility of spooky action at a distance.
+    splice @_, 1, $#_, '%Ex%n%En%ED';
+    goto &strftime;
 }
 
 sub strftime {
@@ -653,6 +646,20 @@ of the return value.
 
 If you don't like how this is formatted, complain at me and if I like
 you I'll consider changing it :-)
+
+=head2 on_date_accented
+
+This is pretty much the same as L<on_date()|/on_date>, but proper nouns
+will be accented as they are in the text of Lord Of The Rings.
+
+Be aware that if you use this method you will need to properly condition
+any output stream you write this text to. Under Perl 5.8 or higher, for
+example, you could do
+
+    binmode STDOUT, ':encoding(utf-8)';
+
+This will not work under Perl 5.6, so under that version you will simply
+have to run Perl with the C<-C> option.
 
 =head2 strftime
 
