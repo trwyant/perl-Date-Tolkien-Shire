@@ -720,6 +720,10 @@ with percent signs (i.e. C<'|%|%|'>.
 
 =back
 
+This method also supports certain Glibc extensions; specifically the
+formatting flags C<'-'>, C<'_'>, C<'0'> and C<'^'>, and user-specified
+field widths.
+
 See L<__format()|Date::Tolkien::Shire::Data/__format> in
 L<Date::Tolkien::Shire::Data|Date::Tolkien::Shire::Data> for full
 documentation, which takes precedence over anything said here.
