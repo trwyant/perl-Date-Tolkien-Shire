@@ -322,6 +322,9 @@ sub on_date {
 sub strftime {
     my ( $self, @fmt ) = @_;
 
+    $self->_has_date()
+	or return 0;
+
     my %hash = (
 	year	=> $self->{year},
 	month	=> $self->{month},
