@@ -24,11 +24,13 @@ our $ERROR;
 our $VERSION = '1.21';
 
 sub new {
-    my ( $class, $date ) = @_;
+    my ( $class, $date, %arg ) = @_;
     my $self = {};
     $ERROR = '';
     bless($self, $class);
     $self->set_date($date) if defined($date);
+    $self->set_accented( $arg{accented} );
+    $self->set_traditional( $arg{traditional} );
     return $self;
 }
 
@@ -37,14 +39,22 @@ sub error {
 }
 
 sub today {
-    my ( $class ) = @_;
+    my ( $class, %arg ) = @_;
     # TODO If I ever do time-of-day support, this will have to change.
-    return $class->new( time );
+    my $self = $class->new( time );
+    $self->set_accented( $arg{accented} );
+    $self->set_traditional( $arg{traditional} );
+    return $self;
 }
 
 sub from_shire {
     my ( $class, %arg ) = @_;
-    return $class->new()->set_shire( %arg );
+    my $accented = delete $arg{accented};
+    my $traditional = delete $arg{traditional};
+    my $self = $class->new()->set_shire( %arg );
+    $self->set_accented( $accented );
+    $self->set_traditional( $traditional );
+    return $self;
 }
 
 sub set_date {
@@ -151,6 +161,18 @@ sub set_rata_die {
     }
 }
 
+sub set_accented {
+    my ( $self, $value ) = @_;
+    $self->{accented} = $value;
+    return $self;
+}
+
+sub set_traditional {
+    my ( $self, $value ) = @_;
+    $self->{traditional} = $value;
+    return $self;
+}
+
 sub time_in_seconds {
     my ( $self ) = @_;
 
@@ -246,6 +268,8 @@ sub day {
     return $self->{monthday};
 }
 
+*day_number = \&day;
+
 sub holiday {
     my ( $self ) = @_;
 
@@ -273,6 +297,12 @@ sub year {
     return $self->{year};
 }
 
+*year_number = \&year;
+
+*hour = *minute = *second = *nanosecond = *offset = sub { 0 };
+
+sub time_zone_short_name{ return '' };
+
 use overload
     '<=>' => \&_space_ship,
     'cmp' => \&_space_ship,
@@ -290,6 +320,7 @@ sub _space_ship {
     return $time1 <=> $time2;
 } #end sub _space_ship
 
+sub accented { return $_[0]->{accented} }
 
 sub as_string {
     # I can not just assign to $_[1] because it is an alias for the
@@ -305,31 +336,18 @@ sub on_date {
     goto &strftime;
 }
 
-sub on_date_accented {
-    # I can not just assign to $_[1] because it is an alias for the
-    # argument, thus the possibility of spooky action at a distance.
-    splice @_, 1, $#_, '%Ex%n%En%ED';
-    goto &strftime;
-}
-
 sub strftime {
     my ( $self, @fmt ) = @_;
 
     $self->_has_date()
 	or return 0;
 
-    my %hash = (
-	year	=> $self->{year},
-	month	=> $self->{month},
-	day	=> $self->{monthday},
-	holiday	=> $self->{holiday},
-	epoch	=> $self->epoch(),
-    );
-
     return wantarray ?
-	( map { __format( \%hash, $_ ) } @fmt ) :
-	__format( \%hash, $fmt[0] );
+	( map { __format( $self, $_ ) } @fmt ) :
+	__format( $self, $fmt[0] );
 }
+
+sub traditional { return $_[0]->{traditional} }
 
 sub _error_out {
     my ( $return, @msg ) = @_;
@@ -398,7 +416,27 @@ The constructor C<new()> can take zero or one parameter. Either a new object
 can be created without setting a specific date (the zero-parameter
 version), or an object can be created and the date set to either a
 current shire date, or an epoch time such as is returned by the time
-function.  For specifics on setting dates, see the 'set_date' function.
+function. For specifics on setting dates, see the 'set_date' function.
+
+This constructor also takes optional arguments as name/value pairs. The
+optional arguments are:
+
+=over
+
+=item accented
+
+If this value is true (in the Perl sense), L<on_date()|/on_date> will
+produce accented output, as will L<strftime()|/strftime> if given a
+template that includes the events on the date represented by the object.
+
+=item traditional
+
+If this value is true (in the Perl sense), L<on_date()|/on_date> and
+L<strftime()|/strftime> will produce traditional rather than common
+weekday names. This option does not affect the output of
+L<weekday()|/weekday> or L<trad_weekday()|/trad_weekday>.
+
+=back
 
 =head2 error
 
@@ -416,6 +454,8 @@ an error occurred.
 This convenience constructor returns an object set to midnight the
 morning of the current local day.
 
+The optional arguments for L<new()|/new> may also be used here.
+
 =head2 from_shire
 
     $shiredate = Date::Tolkien::Shire->from_shire(
@@ -430,6 +470,8 @@ morning of the current local day.
 
 This convenience constructor just wraps a call to C<new()> followed by a
 call to C<set_shire()>.
+
+The optional arguments for L<new()|/new> may also be used here.
 
 =head2 set_date
 
@@ -474,6 +516,18 @@ defaults to C<1>.
 
 This method returns the invocant. Errors are indicated by setting the
 C<$ERROR> variable.
+
+=head2 set_accented
+
+This method takes a Boolean value which determines whether
+L<on_date()|/on_date> should produce accented output. It returns the
+invocant.
+
+=head2 set_traditional
+
+This method takes a Boolean value which determines whether
+L<on_date()|/on_date> should use traditional rather than common names
+for the days of the week. It returns the invocant.
 
 =head2 time_in_seconds
 
@@ -546,6 +600,10 @@ the case of a holiday, since they are not part of any month. Since C<0>
 is also returned on an error (date not set), the careful programmer will
 check C<$ERROR> if C<0> is returned.
 
+=head2 day_number
+
+This method is a synonym for L<day()|/day>.
+
 =head2 holiday
 
     $holiday_name = $shiredate->holiday;
@@ -579,6 +637,44 @@ programmer will check C<$ERROR> if C<0> is returned.
 
 Returns the year of the shire date in question.  See the note on year
 calculation below if you want to see how I figured this.
+
+=head2 year_number
+
+This method is a synonym for L<year()|/year>.
+
+=head2 hour
+
+This method always returns C<0>.
+
+=head2 minute
+
+This method always returns C<0>.
+
+=head2 second
+
+This method always returns C<0>.
+
+=head2 nanosecond
+
+This method always returns C<0>.
+
+=head2 offset
+
+This method always returns C<0>.
+
+=head2 time_zone_short_name
+
+This method always returns C<''>.
+
+=head2 accented
+
+This method returns a true value if L<on_date()|/on_date> is to produce
+accented output.
+
+=head2 traditional
+
+This method returns a true value if L<on_date()|/on_date> is to use
+traditional rather than current weekday names.
 
 =head2 Overloaded Operators
 
@@ -647,19 +743,9 @@ of the return value.
 If you don't like how this is formatted, complain at me and if I like
 you I'll consider changing it :-)
 
-=head2 on_date_accented
-
-This is pretty much the same as L<on_date()|/on_date>, but proper nouns
-will be accented as they are in the text of Lord Of The Rings.
-
-Be aware that if you use this method you will need to properly condition
-any output stream you write this text to. Under Perl 5.8 or higher, for
-example, you could do
-
-    binmode STDOUT, ':encoding(utf-8)';
-
-This will not work under Perl 5.6, so under that version you will simply
-have to run Perl with the C<-C> option.
+If L<accented()|/accented> is true, this method returns accented output.
+If L<traditional()|/traditional> is true, this method uses traditional
+rather than common weekday names.
 
 =head2 strftime
 
@@ -673,6 +759,10 @@ See L<__format()|Date::Tolkien::Shire::Data/__format> in
 L<Date::Tolkien::Shire::Data|Date::Tolkien::Shire::Data> for the
 documentation, since that is the code that does the heavy lifting for
 us.
+
+If L<accented()|/accented> is true, this method returns accented output.
+If L<traditional()|/traditional> is true, this method uses traditional
+rather than common weekday names.
 
 =head1 NOTE: YEAR CALCULATION
 
