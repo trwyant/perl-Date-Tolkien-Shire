@@ -9,7 +9,7 @@ use Date::Tolkien::Shire;
 use Test::More 0.47;	# The best we can do with 5.6.2.
 use Time::Local;
 
-plan tests => 2568;
+plan tests => 2567;
 
 my @month_length = ( 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 );
 
@@ -42,17 +42,14 @@ for my $year ( 1999 .. 2002, 2035 .. 2037 ) {
     cmp_ok( $date1->month(), 'eq', 'Afteryule',
 	'2037-12-31 is month Afteryule' );
 
-    cmp_ok( $date1->month_number(), '==', 1,
+    cmp_ok( $date1->__fmt_shire_month(), '==', 1,
 	'2037-12-31 is month 1 of the Shire calendar' );
-
-    cmp_ok( $date1->holiday_number(), '==', 0,
-	'2037-12-31 is not a holiday in the Shire calendar' );
 
     cmp_ok( $date1->day(), '==', 9, '2037-12-31 is day 9 of Afteryule' );
 
     cmp_ok( $date1->weekday(), 'eq', 'Monday', '2037-12-31 is Monday' );
 
-    cmp_ok( $date1->weekday_number(), '==', 3,
+    cmp_ok( $date1->__fmt_shire_day_of_week(), '==', 3,
 	'2037-12-21 is day 3 of the Shire week' );
 
     cmp_ok( $date1->trad_weekday(), 'eq', 'Monendei',

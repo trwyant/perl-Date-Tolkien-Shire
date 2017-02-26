@@ -212,7 +212,7 @@ sub time_in_seconds {
 
 # TODO if I do time of day, epoch() will return it, whereas
 # time_in_seconds will not.
-*epoch = \&time_in_seconds;	# sub epoch
+*epoch = \&time_in_seconds;	# sub epoch;
 
 sub weekday {
     my ( $self ) = @_;
@@ -250,15 +250,6 @@ sub month {
     return __month_name( $self->{month} );
 }
 
-sub month_number {
-    my ( $self ) = @_;
-
-    $self->_has_date()
-	or return 0;
-
-    return $self->{month};
-}
-
 sub day {
     my ( $self ) = @_;
 
@@ -267,8 +258,6 @@ sub day {
 
     return $self->{monthday};
 }
-
-*day_number = \&day;
 
 sub holiday {
     my ( $self ) = @_;
@@ -279,15 +268,6 @@ sub holiday {
     return __holiday_name( $self->{holiday} );
 }
 
-sub holiday_number {
-    my ( $self ) = @_;
-
-    $self->_has_date()
-	or return 0;
-
-    return $self->{holiday};
-}
-
 sub year {
     my ( $self ) = @_;
 
@@ -296,12 +276,6 @@ sub year {
 
     return $self->{year};
 }
-
-*year_number = \&year;
-
-*hour = *minute = *second = *nanosecond = *offset = sub { 0 };
-
-sub time_zone_short_name{ return '' };
 
 use overload
     '<=>' => \&_space_ship,
@@ -348,6 +322,51 @@ sub strftime {
 }
 
 sub traditional { return $_[0]->{traditional} }
+
+# Date::Tolkien::Shire::Data::__format() date object interface
+
+*__fmt_shire_year = \&year;	# sub __fmt_shire_year;
+
+sub __fmt_shire_month {
+    my ( $self ) = @_;
+
+    $self->_has_date()
+	or return 0;
+
+    return $self->{month};
+}
+
+sub __fmt_shire_day {
+    my ( $self ) = @_;
+
+    $self->_has_date()
+	or return 0;
+
+    return $self->{monthday} || $self->{holiday};
+}
+
+sub __fmt_shire_day_of_week {
+    my ( $self ) = @_;
+
+    $self->_has_date()
+	or return 0;
+
+    return $self->{weekday};
+}
+
+# sub __fmt_shire_hour; sub __fmt_shire_minute; sub __fmt_shire_second;
+# sub __fmt_shire_nanosecond;
+*__fmt_shire_hour = *__fmt_shire_minute = *__fmt_shire_second =
+    *__fmt_shire_nanosecond = sub { 0 };
+
+# The interface definition requires this to return undef, since the zone
+# is undefined. See Date::Tolkien::Shire::Data.
+sub __fmt_shire_zone_offset { return undef }	## no critic (ProhibitExplicitReturnUndef)
+sub __fmt_shire_zone_name { return '' }
+
+*__fmt_shire_epoch = \&epoch;			# sub __fmt_shire_epoch;
+*__fmt_shire_accented = \&accented;	# sub __fmt_shire_accented;
+*__fmt_shire_traditional = \&traditional;	# sub __fmt_shire_traditional;
 
 sub _error_out {
     my ( $return, @msg ) = @_;
@@ -581,16 +600,6 @@ This method returns the month name of the date in question, or an empty
 string if the day is a holiday, since holidays are not part of any
 month.
 
-=head2 month_number
-
-    $month_number = $shiredate->month_number;
-
-This method returns the month number of the date in question, or C<0> if
-the day is a holiday, since holidays are not part of any month. Note
-that C<0> is also returned on an error (date not set), so the careful
-programmer who uses this method will check C<$ERROR> if C<0> is
-returned.
-
 =head2 day
 
     $day_of_month = $self->day;
@@ -599,10 +608,6 @@ This method returns the day of the month of the day in question, or C<0> in
 the case of a holiday, since they are not part of any month. Since C<0>
 is also returned on an error (date not set), the careful programmer will
 check C<$ERROR> if C<0> is returned.
-
-=head2 day_number
-
-This method is a synonym for L<day()|/day>.
 
 =head2 holiday
 
@@ -613,58 +618,12 @@ Yule">, C<"2 Yule"> (first day of the new year), C<"1 Lithe">,
 C<"Midyear's day">, C<"Overlithe">, or C<"2 Lithe">.  If the day is not
 a holiday, an empty string is returned.
 
-=head2 holiday_number
-
-    $holiday_number = $shiredate->holiday_number;
-
-This method returns the holiday number of the date in question, as
-follows:
-
-    0 - Not a holiday
-    1 - 2 Yule
-    2 - 1 Lithe
-    3 - Midyear's day
-    4 - Overlithe (leap year only)
-    5 - 2 Lithe
-    6 - 1 Yule
-
-Since C<0> is also returned on an error (date not set), the careful
-programmer will check C<$ERROR> if C<0> is returned.
-
 =head2 year
 
     $shire_year = $shiredate->year;
 
 Returns the year of the shire date in question.  See the note on year
 calculation below if you want to see how I figured this.
-
-=head2 year_number
-
-This method is a synonym for L<year()|/year>.
-
-=head2 hour
-
-This method always returns C<0>.
-
-=head2 minute
-
-This method always returns C<0>.
-
-=head2 second
-
-This method always returns C<0>.
-
-=head2 nanosecond
-
-This method always returns C<0>.
-
-=head2 offset
-
-This method always returns C<0>.
-
-=head2 time_zone_short_name
-
-This method always returns C<''>.
 
 =head2 accented
 
