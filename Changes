@@ -1,3 +1,31 @@
+1.899_01	2017-03-07	T. R. Wyant
+    Add Boolean attributes 'accented' and 'traditional', which request
+    accented on_date() text and traditional weekday names respectively.
+    These have accessors accented() and traditional(), and mutators
+    set_accented() and set_traditional() respectively.
+
+    Ensure date is set (or return 0) in strftime().
+
+    Allow 0 as year argument to set_time().
+
+    Add accessors weekday_number(), month_number(), and
+    holiday_number().
+
+    Add mutator set_shire(), which sets a Shire date.
+
+    Add constructor, today(), from_shire().
+
+    Add strftime(), based on Date::Tolkien::Shire::Data::__format().
+
+    Factor code common to Date::Tolkien::Shire and
+    DateTime::Fiction::JRRTolkien::Shire into Date::Tolkien::Shire::Data
+
+    Add regression tools. This includes a copy of Date::Tolkien::Shire
+    1.13 (with back-ported on_date() fixes), the script
+    tools/make-regression to generate a test that compares the output of
+    the current Date::Tolkien::Shire to the copy of Date::Tolkien::Shire
+    that is in tools/lib, and xt/author/regression.t
+
 1.21		2017-02-06	T. R. Wyant
     Fix broken link in POD. Thanks to Mohammad S Anwar for picking up on
     this.
