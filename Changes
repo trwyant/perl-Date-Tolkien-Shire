@@ -1,4 +1,4 @@
-1.899_01	2017-03-07	T. R. Wyant
+1.900		2017-03-16	T. R. Wyant
     Add Boolean attributes 'accented' and 'traditional', which request
     accented on_date() text and traditional weekday names respectively.
     These have accessors accented() and traditional(), and mutators
