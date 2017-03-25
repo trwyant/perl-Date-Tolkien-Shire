@@ -1,3 +1,6 @@
+1.900_01	2017-03-25	T. R. Wyant
+    Require Date::Tolkien::Shire::Data 0.001.
+
 1.900		2017-03-16	T. R. Wyant
     Add Boolean attributes 'accented' and 'traditional', which request
     accented on_date() text and traditional weekday names respectively.
