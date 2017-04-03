@@ -21,4 +21,5 @@ CVS/
 ^tools/
 ^TODO$
 ^xt/author/optionals/
+^xt/author/regression.t
 ^Date-Tolkien-Shire

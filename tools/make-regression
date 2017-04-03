@@ -14,11 +14,20 @@ use Time::Local;
 
 our $VERSION = '1.901';
 
-my %opt;
+my %opt = (
+    output	=> 'xt/author/regression.t',
+);
 
 GetOptions( \%opt,
-    help => sub { pod2usage( { -verbose => 2 } ) },
+    qw{ output=s },
+    help	=> sub { pod2usage( { -verbose => 2 } ) },
 ) or pod2usage( { -verbose => 0 } );
+
+unless ( '-' eq $opt{output} ) {
+    open my $fh, '>', $opt{output}
+	or die "Unable to open $opt{output}: $!\n";
+    select $fh;
+}
 
 my @test_years = (	# [ start, finish ] with interval open on right
     [ 1999, 2003 ],	# January 1 1999 through December 31 2002
@@ -134,7 +143,8 @@ make-regression - Generate a regression test
 
 =head1 SYNOPSIS
 
- make-regression >xt/author/regression.t
+ make-regression
+ make-regression -output xt/author/regression.new
  make-regression -help
  make-regression -version
 
@@ -144,6 +154,15 @@ make-regression - Generate a regression test
 
 This option displays the documentation for this script. The script then
 exits.
+
+=head2 -output
+
+ -output xt/author/regression.t
+
+This option specifies the output file. A single dash (F<->) is
+understood as specifying standard output.
+
+The default is F<xt/author/regression.t>.
 
 =head2 -version
 
@@ -158,7 +177,7 @@ This test consists of calling each method for each day in the intervals
 inclusive, and verifying that all calls produce the same results as when
 the regression test was generated.
 
-The test is written to standard out.
+The test is written to the file specified by the C<-output> argument.
 
 =head1 AUTHOR
 
