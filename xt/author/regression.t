@@ -1396,7 +1396,7 @@ cmp_ok( $dts->as_string(), 'eq', 'Sterday 8 Astron 7463', 'as_string() on 1999-0
 cmp_ok( $dts->on_date(), 'eq', <<'EOT', 'on_date() on 1999-03-31 Gregorian' );
 Sterday 8 Astron 7463
 
-Ring bearers are honored on the fields of Cormallen, 1419.
+Ring bearers are honored on the Field of Cormallen, 1419.
 EOT
 
 $epoch = timelocal( 0, 0, 0, 1, 3, 1999 );
@@ -6705,7 +6705,7 @@ cmp_ok( $dts->as_string(), 'eq', 'Sterday 8 Astron 7464', 'as_string() on 2000-0
 cmp_ok( $dts->on_date(), 'eq', <<'EOT', 'on_date() on 2000-03-30 Gregorian' );
 Sterday 8 Astron 7464
 
-Ring bearers are honored on the fields of Cormallen, 1419.
+Ring bearers are honored on the Field of Cormallen, 1419.
 EOT
 
 $epoch = timelocal( 0, 0, 0, 31, 2, 2000 );
@@ -12028,7 +12028,7 @@ cmp_ok( $dts->as_string(), 'eq', 'Sterday 8 Astron 7465', 'as_string() on 2001-0
 cmp_ok( $dts->on_date(), 'eq', <<'EOT', 'on_date() on 2001-03-31 Gregorian' );
 Sterday 8 Astron 7465
 
-Ring bearers are honored on the fields of Cormallen, 1419.
+Ring bearers are honored on the Field of Cormallen, 1419.
 EOT
 
 $epoch = timelocal( 0, 0, 0, 1, 3, 2001 );
@@ -17337,7 +17337,7 @@ cmp_ok( $dts->as_string(), 'eq', 'Sterday 8 Astron 7466', 'as_string() on 2002-0
 cmp_ok( $dts->on_date(), 'eq', <<'EOT', 'on_date() on 2002-03-31 Gregorian' );
 Sterday 8 Astron 7466
 
-Ring bearers are honored on the fields of Cormallen, 1419.
+Ring bearers are honored on the Field of Cormallen, 1419.
 EOT
 
 $epoch = timelocal( 0, 0, 0, 1, 3, 2002 );
@@ -22646,7 +22646,7 @@ cmp_ok( $dts->as_string(), 'eq', 'Sterday 8 Astron 7499', 'as_string() on 2035-0
 cmp_ok( $dts->on_date(), 'eq', <<'EOT', 'on_date() on 2035-03-31 Gregorian' );
 Sterday 8 Astron 7499
 
-Ring bearers are honored on the fields of Cormallen, 1419.
+Ring bearers are honored on the Field of Cormallen, 1419.
 EOT
 
 $epoch = timelocal( 0, 0, 0, 1, 3, 2035 );
@@ -27955,7 +27955,7 @@ cmp_ok( $dts->as_string(), 'eq', 'Sterday 8 Astron 7500', 'as_string() on 2036-0
 cmp_ok( $dts->on_date(), 'eq', <<'EOT', 'on_date() on 2036-03-30 Gregorian' );
 Sterday 8 Astron 7500
 
-Ring bearers are honored on the fields of Cormallen, 1419.
+Ring bearers are honored on the Field of Cormallen, 1419.
 EOT
 
 $epoch = timelocal( 0, 0, 0, 31, 2, 2036 );
@@ -33264,7 +33264,7 @@ cmp_ok( $dts->as_string(), 'eq', 'Sterday 8 Astron 7501', 'as_string() on 2037-0
 cmp_ok( $dts->on_date(), 'eq', <<'EOT', 'on_date() on 2037-03-30 Gregorian' );
 Sterday 8 Astron 7501
 
-Ring bearers are honored on the fields of Cormallen, 1419.
+Ring bearers are honored on the Field of Cormallen, 1419.
 EOT
 
 $epoch = timelocal( 0, 0, 0, 31, 2, 2037 );
@@ -38573,7 +38573,7 @@ cmp_ok( $dts->as_string(), 'eq', 'Sterday 8 Astron 7502', 'as_string() on 2038-0
 cmp_ok( $dts->on_date(), 'eq', <<'EOT', 'on_date() on 2038-03-30 Gregorian' );
 Sterday 8 Astron 7502
 
-Ring bearers are honored on the fields of Cormallen, 1419.
+Ring bearers are honored on the Field of Cormallen, 1419.
 EOT
 
 $epoch = timelocal( 0, 0, 0, 31, 2, 2038 );
