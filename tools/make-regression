@@ -5,7 +5,7 @@ use 5.006002;
 use strict;
 use warnings;
 
-use lib qw{ tools/lib };
+use PAR qw{ tools/Date-Tolkien-Shire-old.par };
 
 use Date::Tolkien::Shire;
 use Getopt::Long 2.33 qw{ :config auto_version };
