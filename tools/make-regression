@@ -5,8 +5,6 @@ use 5.006002;
 use strict;
 use warnings;
 
-use PAR qw{ tools/Date-Tolkien-Shire-old.par };
-
 use Date::Tolkien::Shire;
 use Getopt::Long 2.33 qw{ :config auto_version };
 use Pod::Usage;
@@ -24,10 +22,13 @@ GetOptions( \%opt,
     help	=> sub { pod2usage( { -verbose => 2 } ) },
 ) or pod2usage( { -verbose => 0 } );
 
-unless ( '-' eq $opt{output} ) {
+if ( '-' eq $opt{output} ) {
+    load_par();
+} else {
     $opt{idempotent}
 	and -f $opt{output}
 	and exit;
+    load_par();
     open my $fh, '>', $opt{output}
 	or die "Unable to open $opt{output}: $!\n";
     select $fh;
@@ -77,6 +78,12 @@ print <<'EOD';
 
 # ex: set textwidth=72 :
 EOD
+
+sub load_par {
+    require PAR;
+    PAR->import( qw{ tools/Date-Tolkien-Shire-old.par } );
+    return;
+}
 
 sub test_years {
     my ( $start_year, $finish_year, $emit ) = @_;
@@ -189,6 +196,9 @@ inclusive, and verifying that all calls produce the same results as when
 the regression test was generated.
 
 The test is written to the file specified by the C<-output> argument.
+
+B<Note> that unless L<-idempotent> is specified and the output file
+exists, the L<PAR|/PAR> module is required.
 
 =head1 AUTHOR
 
