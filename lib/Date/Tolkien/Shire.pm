@@ -21,7 +21,7 @@ use Date::Tolkien::Shire::Data qw{
 use Time::Local;
 
 our $ERROR;
-our $VERSION = '1.901';
+our $VERSION = '1.901_01';
 
 sub new {
     my ( $class, $date, %arg ) = @_;
