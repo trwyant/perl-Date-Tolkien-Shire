@@ -1,9 +1,8 @@
-1.901_01	2019-07-11	T. R. Wyant
+1.902		2019-07-21	T. R. Wyant
     Test POD links.
 
-    PAR-pack old module used by tools/make-regression
-    in an attempt to hide POD errors from CPANTS. PAR is only loaded if
-    actually needed.
+    PAR-pack old module used by tools/make-regression in an attempt to
+    hide POD errors from CPANTS. PAR is only loaded if actually needed.
 
     Back-port 'Party Field' for regression test.
 
