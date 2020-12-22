@@ -766,6 +766,10 @@ epoch time doesn't support (currently values before 1902 or after 2037).  The
 module should automatically expand in available dates directly with epoch time
 support on your system.
 
+Please file bug reports at
+L<https://github.com/trwyant/perl-Date-Tolkien-Shire/issues>, or in
+electronic mail to F<wyant@cpan.org>.
+
 =head1 AUTHOR
 
 Tom Braun <tbraun@pobox.com>
