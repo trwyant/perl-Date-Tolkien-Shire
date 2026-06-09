@@ -775,7 +775,7 @@ electronic mail to the author.
 
 Tom Braun <tbraun@pobox.com>
 
-Thomas R. Wyant, III F<wyant at cpan dot org>
+Thomas R. Wyant, III F<harryfmudd at comcast dot net>
 
 =head1 COPYRIGHT AND LICENSE
 
