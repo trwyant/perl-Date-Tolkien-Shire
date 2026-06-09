@@ -767,8 +767,7 @@ module should automatically expand in available dates directly with epoch time
 support on your system.
 
 Support is by the author. Please file bug reports at
-L<https://rt.cpan.org/Public/Dist/Display.html?Name=Date-Tolkien-Shire>,
-L<https://github.com/trwyant/perl-Date-Tolkien-Shire/issues>, or in
+L<https://github.com/trwyant/perl-Date-Tolkien-Shire/issues> or in
 electronic mail to the author.
 
 =head1 AUTHOR
