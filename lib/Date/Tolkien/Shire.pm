@@ -751,6 +751,8 @@ and 400 year intervals occur at different times in the two calendars,
 however.  Thus the last day of our year is sometimes 7 Afteryule,
 sometimes 8, and sometimes 9.
 
+I<The "I" in the above is Tom Braun -- TRW>
+
 =head1 BIBLIOGRAPHY
 
 Tolkien, J. R. R. I<Return of the King>.  New York: Houghton Mifflin Press,
@@ -789,7 +791,7 @@ calendar itself.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. For more details, see the full text
-of the licenses in the directory LICENSES.
+of the licenses in the files F<LICENSE-Artistic> and F<LICENSE-GPL>.
 
 This program is distributed in the hope that it will be useful, but
 without any warranty; without even the implied warranty of
