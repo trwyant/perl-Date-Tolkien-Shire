@@ -725,13 +725,13 @@ rather than common weekday names.
 
 =head1 NOTE: YEAR CALCULATION
 
-L<https://encyclopedia-of-arda.com/f/fourthage.html> references a letter
-sent by Tolkien in 1958 in which he estimates approximately 6000 years
-have passed since the War of the Ring and the end of the Third Age.
-(Thanks to Danny O'Brien from sending me this link). I took this
+L<https://www.encyclopedia-of-arda.com/f/fourthage.html> references a
+letter sent by Tolkien in 1958 in which he estimates approximately 6000
+years have passed since the War of the Ring and the end of the Third
+Age. (Thanks to Danny O'Brien from sending me this link). I took this
 approximate as an exact and calculated back 6000 years from 1958 and set
 this as the start of the 4th age (1422). Thus the fourth age begins in
-our B.C 4042.
+our 4042 B.C.
 
 According to Appendix D of the Lord of the Rings, leap years in the
 hobbits' calendar are every 4 years unless it is the turn of the
@@ -758,7 +758,7 @@ I<The "I" in the above is Tom Braun -- TRW>
 Tolkien, J. R. R. I<Return of the King>.  New York: Houghton Mifflin Press,
 1955.
 
-L<https://encyclopedia-of-arda.com/f/fourthage.html>
+L<https://www.encyclopedia-of-arda.com/f/fourthage.html>
 
 =head1 BUGS
 
