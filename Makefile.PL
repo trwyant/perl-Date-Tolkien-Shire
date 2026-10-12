@@ -57,6 +57,7 @@ if ( $mmv >= 6.4501 ) {
 	    },
 	},
     };
+    $args{META_MERGE}{release_status} = 'stable';
 }
 
 $mmv >= 6.4701
